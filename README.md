@@ -3,7 +3,7 @@
 This repository contains the full-stack School Management System, split into two main directories:
 
 - [`frontend/`](./frontend) — React + TypeScript + Vite + Tailwind CSS
-- [`backend/`](./backend) — Node.js + Express + TypeScript + Prisma REST API
+- [`backend/`](./backend) — Node.js + Express + TypeScript + Sequelize + MySQL REST API
 
 ---
 
@@ -21,16 +21,16 @@ S2-Assessment_2-School-Management-System/
 │   └── ...
 ├── backend/              # Backend Node.js REST API
 │   ├── src/
+│   │   ├── config/       # Database connection (Sequelize)
+│   │   ├── models/       # Sequelize models (User, Role, Course, Enrollment, Material)
 │   │   ├── controllers/  # API Controllers
 │   │   ├── routes/       # API Routes
-│   │   ├── lib/          # Prisma DB Client instance
 │   │   ├── app.ts        # Express App setup
 │   │   └── server.ts     # Entry point (port 5000)
-│   ├── prisma/
-│   │   └── schema.prisma # Prisma database schema
 │   ├── package.json
 │   ├── tsconfig.json
-│   └── ...
+│   ├── .env.example
+│   └── .env
 ├── .gitignore
 └── README.md
 ```
@@ -63,7 +63,7 @@ npm run build
 
 ---
 
-### 2. Backend Setup (Node.js + Express + Prisma)
+### 2. Backend Setup (Node.js + Express + Sequelize + MySQL)
 
 Navigate into the `backend` folder:
 ```bash
@@ -75,10 +75,14 @@ Install dependencies:
 npm install
 ```
 
-Initialize database & Prisma client:
-```bash
-npx prisma generate
-npx prisma db push
+Make sure MySQL (e.g. XAMPP) is running and your `.env` contains your MySQL credentials:
+```env
+PORT=5000
+DB_USERNAME=root
+DB_PASSWORD=
+DB_NAME=school_management
+DB_HOST=127.0.0.1
+DB_DIALECT=mysql
 ```
 
 Start the development server:
@@ -95,5 +99,6 @@ Start production server:
 ```bash
 npm start
 ```
+
 
 
