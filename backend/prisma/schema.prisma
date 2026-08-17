@@ -1,5 +1,5 @@
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -7,11 +7,92 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String?
-  role      String   @default("STUDENT")
+model Role {
+  id        Int      @id @default(autoincrement())
+  roleName  String   @unique
+  users     User[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("roles")
+}
+
+model User {
+  id                Int          @id @default(autoincrement())
+  name              String
+  email             String       @unique
+  password          String
+  phone             String?
+  roleId            Int?
+  role              Role?        @relation(fields: [roleId], references: [id])
+  adminNotes        String?      @db.Text
+  professionalTitle String?
+  officeLocation    String?
+  avatar            String?      @db.LongText
+  academicRole      String?
+  subject           String?
+  joinedAt          DateTime?
+  profilePhotoPath  String?
+  
+  // Relations
+  taughtCourses     Course[]     @relation("TeacherCourses")
+  enrollments       Enrollment[]
+  
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  @@map("users")
+}
+
+model Course {
+  id             Int          @id @default(autoincrement())
+  courseName     String
+  department     String
+  description    String?      @db.Text
+  capacity       Int          @default(100)
+  schedule       String       @default("Mon, Wed, Fri 10:00 AM - 11:30 AM")
+  room           String       @default("Auditorium B-12")
+  syllabusPath   String?
+  enrollmentCode String?
+  
+  teacherId      Int?
+  teacher        User?        @relation("TeacherCourses", fields: [teacherId], references: [id])
+  
+  enrollments    Enrollment[]
+  materials      Material[]
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("courses")
+}
+
+model Enrollment {
+  id        Int      @id @default(autoincrement())
+  studentId Int
+  courseId  Int
+  status    String   @default("pending") // 'pending' | 'approved'
+  
+  student   User     @relation(fields: [studentId], references: [id])
+  course    Course   @relation(fields: [courseId], references: [id])
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([studentId, courseId])
+  @@map("enrollments")
+}
+
+model Material {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?  @db.Text
+  filePath    String?
+  courseId    Int
+  course      Course   @relation(fields: [courseId], references: [id])
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("materials")
 }
