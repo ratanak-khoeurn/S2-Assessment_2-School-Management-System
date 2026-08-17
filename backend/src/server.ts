@@ -6,7 +6,7 @@ import "./models/index.js";
 dotenv.config();
 
 const app = createApp();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async () => {
   console.log(`🚀 API Server is running on http://localhost:${PORT}`);

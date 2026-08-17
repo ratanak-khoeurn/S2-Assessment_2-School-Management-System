@@ -77,7 +77,7 @@ npm install
 
 Make sure MySQL (e.g. XAMPP) is running and your `.env` contains your MySQL credentials:
 ```env
-PORT=5000
+PORT=3000
 DB_USERNAME=root
 DB_PASSWORD=
 DB_NAME=school_management
