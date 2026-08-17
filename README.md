@@ -3,7 +3,7 @@
 This repository contains the full-stack School Management System, split into two main directories:
 
 - [`frontend/`](./frontend) — React + TypeScript + Vite + Tailwind CSS
-- [`backend/`](./backend) — Laravel PHP API
+- [`backend/`](./backend) — Node.js + Express + TypeScript + Prisma REST API
 
 ---
 
@@ -19,11 +19,17 @@ S2-Assessment_2-School-Management-System/
 │   ├── package.json
 │   ├── vite.config.ts
 │   └── ...
-├── backend/              # Backend Laravel API
-│   ├── app/
-│   ├── routes/
-│   ├── database/
-│   ├── composer.json
+├── backend/              # Backend Node.js REST API
+│   ├── src/
+│   │   ├── controllers/  # API Controllers
+│   │   ├── routes/       # API Routes
+│   │   ├── lib/          # Prisma DB Client instance
+│   │   ├── app.ts        # Express App setup
+│   │   └── server.ts     # Entry point (port 5000)
+│   ├── prisma/
+│   │   └── schema.prisma # Prisma database schema
+│   ├── package.json
+│   ├── tsconfig.json
 │   └── ...
 ├── .gitignore
 └── README.md
@@ -57,31 +63,37 @@ npm run build
 
 ---
 
-### 2. Backend Setup (Laravel)
+### 2. Backend Setup (Node.js + Express + Prisma)
 
 Navigate into the `backend` folder:
 ```bash
 cd backend
 ```
 
-Install PHP dependencies (if composer is installed):
+Install dependencies:
 ```bash
-composer install
+npm install
 ```
 
-Set up `.env` file and generate application key:
+Initialize database & Prisma client:
 ```bash
-cp .env.example .env
-php artisan key:generate
+npx prisma generate
+npx prisma db push
 ```
 
-Run database migrations:
+Start the development server:
 ```bash
-php artisan migrate
+npm run dev
 ```
 
-Start the Laravel development server:
+Build for production:
 ```bash
-php artisan serve
+npm run build
 ```
+
+Start production server:
+```bash
+npm start
+```
+
 
