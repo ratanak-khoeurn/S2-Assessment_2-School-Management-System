@@ -1,32 +1,104 @@
-# React + TypeScript + Vite
+# School Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+This repository contains the full-stack School Management System, split into two main directories:
 
-Currently, two official plugins are available:
+- [`frontend/`](./frontend) — React + TypeScript + Vite + Tailwind CSS
+- [`backend/`](./backend) — Node.js + Express + TypeScript + Sequelize + MySQL REST API
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 📁 Project Structure
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```
+S2-Assessment_2-School-Management-System/
+├── frontend/             # Frontend React application
+│   ├── src/
+│   │   ├── auth/         # Authentication UI (Login, Register, Forgot Password)
+│   │   ├── assets/
+│   │   └── ...
+│   ├── package.json
+│   ├── vite.config.ts
+│   └── ...
+├── backend/              # Backend Node.js REST API
+│   ├── src/
+│   │   ├── config/       # Database connection (Sequelize)
+│   │   ├── models/       # Sequelize models (User, Role, Course, Enrollment, Material)
+│   │   ├── controllers/  # API Controllers
+│   │   ├── routes/       # API Routes
+│   │   ├── app.ts        # Express App setup
+│   │   └── server.ts     # Entry point (port 5000)
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── .env.example
+│   └── .env
+├── .gitignore
+└── README.md
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+---
+
+## 🚀 Getting Started
+
+### 1. Frontend Setup (React + Vite)
+
+Navigate into the `frontend` folder:
+```bash
+cd frontend
+```
+
+Install dependencies:
+```bash
+npm install
+```
+
+Start the Vite development server:
+```bash
+npm run dev
+```
+
+Build for production:
+```bash
+npm run build
+```
+
+---
+
+### 2. Backend Setup (Node.js + Express + Sequelize + MySQL)
+
+Navigate into the `backend` folder:
+```bash
+cd backend
+```
+
+Install dependencies:
+```bash
+npm install
+```
+
+Make sure MySQL (e.g. XAMPP) is running and your `.env` contains your MySQL credentials:
+```env
+PORT=3000
+DB_USERNAME=root
+DB_PASSWORD=
+DB_NAME=school_management
+DB_HOST=127.0.0.1
+DB_DIALECT=mysql
+```
+
+Start the development server:
+```bash
+npm run dev
+```
+
+Build for production:
+```bash
+npm run build
+```
+
+Start production server:
+```bash
+npm start
+```
+
+
+
