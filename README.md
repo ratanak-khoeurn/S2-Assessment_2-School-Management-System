@@ -85,7 +85,20 @@ DB_HOST=127.0.0.1
 DB_DIALECT=mysql
 ```
 
-Start the development server:
+#### Database Seeding
+To automatically create all MySQL tables and seed default users (1 Admin, 1 Teacher, 1 Student):
+```bash
+npm run seed
+```
+
+**Default Seeded Credentials:**
+| Role | Email | Password | Name |
+| :--- | :--- | :--- | :--- |
+| **Admin** | `admin@school.edu` | `password123` | Admin User |
+| **Teacher** | `teacher@school.edu` | `password123` | Teacher Sok Dara |
+| **Student** | `student@school.edu` | `password123` | Student Chan Vathanak |
+
+Start the backend development server:
 ```bash
 npm run dev
 ```

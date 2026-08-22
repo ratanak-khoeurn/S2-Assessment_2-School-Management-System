@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { API_BASE_URL } from "../config/api";
 
 /* =========================================================
    TYPES
@@ -22,86 +23,7 @@ interface Teacher {
    SAMPLE DATA
 ========================================================= */
 
-const INITIAL_TEACHERS: Teacher[] = [
-  {
-    id: 1,
-    teacherId: "TCH-001",
-    name: "Sok Dara",
-    email: "sok.dara@example.com",
-    phone: "012 345 678",
-    gender: "Male",
-    department: "Computer Science",
-    position: "Senior Teacher",
-    qualification: "Master's Degree",
-    status: "Active",
-    joinedDate: "2023-01-15",
-  },
-  {
-    id: 2,
-    teacherId: "TCH-002",
-    name: "Chanthy Sreypich",
-    email: "chanthy.sreypich@example.com",
-    phone: "097 234 567",
-    gender: "Female",
-    department: "Mathematics",
-    position: "Teacher",
-    qualification: "Bachelor's Degree",
-    status: "Active",
-    joinedDate: "2023-03-20",
-  },
-  {
-    id: 3,
-    teacherId: "TCH-003",
-    name: "Vannak Chea",
-    email: "vannak.chea@example.com",
-    phone: "010 456 789",
-    gender: "Male",
-    department: "English",
-    position: "Teacher",
-    qualification: "Bachelor's Degree",
-    status: "Inactive",
-    joinedDate: "2022-08-10",
-  },
-  {
-    id: 4,
-    teacherId: "TCH-004",
-    name: "Sokha Kim",
-    email: "sokha.kim@example.com",
-    phone: "096 345 678",
-    gender: "Female",
-    department: "Science",
-    position: "Senior Teacher",
-    qualification: "Master's Degree",
-    status: "Active",
-    joinedDate: "2021-11-05",
-  },
-  {
-    id: 5,
-    teacherId: "TCH-005",
-    name: "Rithy Lim",
-    email: "rithy.lim@example.com",
-    phone: "088 567 890",
-    gender: "Male",
-    department: "Computer Science",
-    position: "Teacher",
-    qualification: "Bachelor's Degree",
-    status: "Active",
-    joinedDate: "2024-02-12",
-  },
-  {
-    id: 6,
-    teacherId: "TCH-006",
-    name: "Sophea Heng",
-    email: "sophea.heng@example.com",
-    phone: "011 678 901",
-    gender: "Female",
-    department: "Mathematics",
-    position: "Teacher",
-    qualification: "Bachelor's Degree",
-    status: "Active",
-    joinedDate: "2024-04-18",
-  },
-];
+const INITIAL_TEACHERS: Teacher[] = [];
 
 /* =========================================================
    FORM INITIAL STATE
@@ -141,6 +63,36 @@ export default function TeacherPage() {
 
   const [formData, setFormData] = useState(EMPTY_FORM);
 
+  // Fetch teachers from Backend API
+  const fetchTeachers = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/teachers`);
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data)) {
+        const mapped: Teacher[] = json.data.map((u: any) => ({
+          id: u.id,
+          teacherId: `TCH-${String(u.id).padStart(3, "0")}`,
+          name: u.name,
+          email: u.email,
+          phone: u.phone || "N/A",
+          gender: (u.gender as "Male" | "Female") || "Male",
+          department: u.subject || "Computer Science",
+          position: u.professionalTitle || "Lecturer",
+          qualification: u.adminNotes || "Master's Degree",
+          status: (u.status as "Active" | "Inactive") || "Active",
+          joinedDate: u.joinedAt ? u.joinedAt.split("T")[0] : new Date().toISOString().split("T")[0],
+        }));
+        setTeachers(mapped);
+      }
+    } catch (err) {
+      console.error("Fetch teachers error:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchTeachers();
+  }, []);
+
   /* =====================================================
        FILTER
     ====================================================== */
@@ -174,6 +126,7 @@ export default function TeacherPage() {
     setFormData({
       ...EMPTY_FORM,
       teacherId: `TCH-${String(teachers.length + 1).padStart(3, "0")}`,
+      joinedDate: new Date().toISOString().split("T")[0],
     });
 
     setShowFormModal(true);
@@ -206,7 +159,7 @@ export default function TeacherPage() {
        SAVE TEACHER
     ====================================================== */
 
-  const handleSaveTeacher = () => {
+  const handleSaveTeacher = async () => {
     if (
       !formData.name ||
       !formData.email ||
@@ -217,27 +170,59 @@ export default function TeacherPage() {
       return;
     }
 
-    if (editingTeacher) {
-      setTeachers((current) =>
-        current.map((teacher) =>
-          teacher.id === editingTeacher.id
-            ? {
-                ...teacher,
-                ...formData,
-              }
-            : teacher,
-        ),
+    // Check unique Teacher ID
+    if (formData.teacherId) {
+      const duplicateId = teachers.find(
+        (t) =>
+          t.teacherId.trim().toLowerCase() === formData.teacherId.trim().toLowerCase() &&
+          (!editingTeacher || t.id !== editingTeacher.id)
       );
-    } else {
-      const newTeacher: Teacher = {
-        id:
-          teachers.length > 0
-            ? Math.max(...teachers.map((teacher) => teacher.id)) + 1
-            : 1,
-        ...formData,
+      if (duplicateId) {
+        alert(`Teacher ID "${formData.teacherId}" already exists. Please enter a unique ID.`);
+        return;
+      }
+    }
+
+    // Check unique Email
+    const duplicateEmail = teachers.find(
+      (t) =>
+        t.email.trim().toLowerCase() === formData.email.trim().toLowerCase() &&
+        (!editingTeacher || t.id !== editingTeacher.id)
+    );
+    if (duplicateEmail) {
+      alert(`Email "${formData.email}" already exists. Please use a different email.`);
+      return;
+    }
+
+    try {
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        department: formData.department,
+        position: formData.position,
+        qualification: formData.qualification,
+        joinedAt: formData.joinedDate,
+        gender: formData.gender,
+        status: formData.status,
       };
 
-      setTeachers((current) => [...current, newTeacher]);
+      if (editingTeacher) {
+        await fetch(`${API_BASE_URL}/teachers/${editingTeacher.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        await fetch(`${API_BASE_URL}/teachers`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      }
+      await fetchTeachers();
+    } catch (err) {
+      console.error("Save teacher error:", err);
     }
 
     setShowFormModal(false);
@@ -254,12 +239,17 @@ export default function TeacherPage() {
     setShowDeleteModal(true);
   };
 
-  const handleDeleteTeacher = () => {
+  const handleDeleteTeacher = async () => {
     if (!selectedTeacher) return;
 
-    setTeachers((current) =>
-      current.filter((teacher) => teacher.id !== selectedTeacher.id),
-    );
+    try {
+      await fetch(`${API_BASE_URL}/teachers/${selectedTeacher.id}`, {
+        method: "DELETE",
+      });
+      await fetchTeachers();
+    } catch (err) {
+      console.error("Delete teacher error:", err);
+    }
 
     setShowDeleteModal(false);
     setSelectedTeacher(null);
@@ -996,8 +986,13 @@ export default function TeacherPage() {
                 <FormInput
                   label="Teacher ID"
                   value={formData.teacherId}
-                  disabled
-                  onChange={() => {}}
+                  placeholder="e.g. TCH-001"
+                  onChange={(value) =>
+                    setFormData({
+                      ...formData,
+                      teacherId: value,
+                    })
+                  }
                 />
 
                 <FormInput

@@ -17,7 +17,7 @@ app.listen(PORT, async () => {
   
   // Automatically synchronize Sequelize models with MySQL if tables do not exist
   try {
-    await sequelize.sync({ alter: false });
+    await sequelize.sync({ alter: true });
     console.log("📦 Sequelize models synchronized with MySQL database.");
   } catch (err) {
     console.warn("⚠️ Database sync skipped or database not yet created:", (err as Error).message);

@@ -16,6 +16,9 @@ export class User extends Model {
   declare subject: string | null;
   declare joinedAt: Date | null;
   declare profilePhotoPath: string | null;
+  declare gender: string | null;
+  declare status: string | null;
+  declare address: string | null;
 }
 
 User.init(
@@ -75,6 +78,20 @@ User.init(
       allowNull: true,
     },
     profilePhotoPath: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    gender: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: "Male",
+    },
+    status: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: "Active",
+    },
+    address: {
       type: DataTypes.STRING,
       allowNull: true,
     },

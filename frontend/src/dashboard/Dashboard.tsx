@@ -13,10 +13,14 @@ import {
   Cell,
 } from "recharts";
 import TeacherPage from "../teachers/TeacherPage";
-import Department from "../departments/DepartmentPage";
 import DepartmentPage from "../departments/DepartmentPage";
+import StudentPage from "../students/StudentPage";
+import SubjectPage from "../subjects/SubjectPage";
+import EnrollmentPage from "../enrollments/EnrollmentPage";
+import AttendancePage from "../attendance/AttendancePage";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
+
 
 // =========================
 // NAVIGATION
@@ -24,17 +28,18 @@ import Header from "../components/Header";
 
 const NAV_ITEMS = [
   { icon: "🏠", label: "Dashboard" },
-  { icon: "🏢", label: "Departments", component: Department },
+  { icon: "🏢", label: "Departments", component: DepartmentPage },
   { icon: "👨‍🏫", label: "Teachers", component: TeacherPage },
-  { icon: "👨‍🎓", label: "Students" },
-  { icon: "📚", label: "Subjects" },
+  { icon: "👨‍🎓", label: "Students", component: StudentPage },
+  { icon: "📚", label: "Subjects", component: SubjectPage },
   { icon: "🏫", label: "Classes" },
-  { icon: "📝", label: "Enrollments" },
-  { icon: "📋", label: "Attendance" },
+  { icon: "📝", label: "Enrollments", component: EnrollmentPage },
+  { icon: "📋", label: "Attendance", component: AttendancePage },
   { icon: "📊", label: "Reports" },
   { icon: "👥", label: "User Management" },
   { icon: "⚙️", label: "Settings" },
 ];
+
 
 // =========================
 // STATISTICS
@@ -133,69 +138,6 @@ const ATTENDANCE_DATA = [
     value: 98,
     pct: "8%",
     color: "#ef4444",
-  },
-];
-
-// =========================
-// RECENT ACTIVITIES
-// =========================
-
-const RECENT_ACTIVITIES = [
-  {
-    title: "New student registered",
-    description: "Student S-1024 was added to the system.",
-    date: "Today, 09:30 AM",
-    icon: "👨‍🎓",
-    color: "#3b82f6",
-  },
-  {
-    title: "Teacher added",
-    description: "Mr. Sok Dara was added as a teacher.",
-    date: "Today, 09:10 AM",
-    icon: "👨‍🏫",
-    color: "#10b981",
-  },
-  {
-    title: "New subject created",
-    description: "Database Management was added.",
-    date: "Yesterday, 04:30 PM",
-    icon: "📚",
-    color: "#f59e0b",
-  },
-  {
-    title: "Department updated",
-    description: "Computer Science department was updated.",
-    date: "Yesterday, 02:15 PM",
-    icon: "🏢",
-    color: "#8b5cf6",
-  },
-];
-
-// =========================
-// UPCOMING EVENTS
-// =========================
-
-const UPCOMING_EVENTS = [
-  {
-    day: "20",
-    month: "AUG",
-    title: "Teacher Meeting",
-    description: "Monthly teacher meeting",
-    time: "09:00 AM",
-  },
-  {
-    day: "22",
-    month: "AUG",
-    title: "Student Enrollment",
-    description: "Enrollment deadline",
-    time: "04:00 PM",
-  },
-  {
-    day: "25",
-    month: "AUG",
-    title: "Attendance Review",
-    description: "Monthly attendance review",
-    time: "10:00 AM",
   },
 ];
 
@@ -314,8 +256,17 @@ export default function Dashboard() {
             <DepartmentPage />
           ) : activeNav === "Teachers" ? (
             <TeacherPage />
+          ) : activeNav === "Students" ? (
+            <StudentPage />
+          ) : activeNav === "Subjects" ? (
+            <SubjectPage />
+          ) : activeNav === "Enrollments" ? (
+            <EnrollmentPage />
+          ) : activeNav === "Attendance" ? (
+            <AttendancePage />
           ) : (
             <>
+
               {/* Page Header */}
               <div style={{ marginBottom: 18 }}>
                 <div

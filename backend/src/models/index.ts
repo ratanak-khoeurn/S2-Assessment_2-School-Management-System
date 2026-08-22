@@ -4,6 +4,7 @@ import { User } from "./User.js";
 import { Course } from "./Course.js";
 import { Enrollment } from "./Enrollment.js";
 import { Material } from "./Material.js";
+import { Attendance } from "./Attendance.js";
 
 // Role & User
 Role.hasMany(User, { foreignKey: "roleId" });
@@ -38,4 +39,12 @@ Enrollment.belongsTo(Course, { foreignKey: "courseId", as: "Course" });
 Course.hasMany(Material, { foreignKey: "courseId", as: "Materials" });
 Material.belongsTo(Course, { foreignKey: "courseId", as: "Course" });
 
-export { sequelize, Role, User, Course, Enrollment, Material };
+// Attendance associations
+User.hasMany(Attendance, { foreignKey: "studentId" });
+Attendance.belongsTo(User, { foreignKey: "studentId", as: "Student" });
+
+Course.hasMany(Attendance, { foreignKey: "courseId" });
+Attendance.belongsTo(Course, { foreignKey: "courseId", as: "Course" });
+
+export { sequelize, Role, User, Course, Enrollment, Material, Attendance };
+

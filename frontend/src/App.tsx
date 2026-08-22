@@ -6,7 +6,6 @@ import RegisterPage from './auth/register';
 import ForgotPassword from './auth/forgot-password';
 import DashboardPage from '../src/dashboard/Dashboard';
 
-const Dashboard = () => <h2>Dashboard (Protected: Anyone logged in)</h2>;
 const AdminPanel = () => <h2>Admin Panel (Protected: Admins only)</h2>;
 const Unauthorized = () => <h2>403 - You cannot access this page</h2>;
 const HomePage = () => <h2>Welcome to home page</h2>;
@@ -22,13 +21,13 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
 
-        {/* MIDDLEWARE LAYER 1: General Authentication */}
+        {/* PROTECTED ROUTES: Authenticated Users */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
         </Route>
 
-        {/* MIDDLEWARE LAYER 2: Role-based Authorization */}
+        {/* PROTECTED ROUTES: Admin Only */}
         <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
           <Route path="/admin" element={<AdminPanel />} />
         </Route>
