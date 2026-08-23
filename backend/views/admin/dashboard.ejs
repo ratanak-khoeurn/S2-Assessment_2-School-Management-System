@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            background: #0f172a;
+            color: #fff;
+        }
+        header h1 { font-size: 1.125rem; margin: 0; }
+        header form { margin: 0; }
+        header button {
+            background: transparent;
+            border: 1px solid #475569;
+            color: #e2e8f0;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        header button:hover { background: #1e293b; }
+        main {
+            max-width: 720px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+        .card p { color: #475569; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>School Management System &middot; Admin</h1>
+        <form method="POST" action="/admin/logout">
+            <button type="submit">Log out</button>
+        </form>
+    </header>
+    <main>
+        <div class="card">
+            <h2>Welcome, <%= admin.name %></h2>
+            <p>Signed in as <strong><%= admin.email %></strong>.</p>
+        </div>
+    </main>
+</body>
+</html>
+ 
