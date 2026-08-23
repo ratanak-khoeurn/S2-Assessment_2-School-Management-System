@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const sequelize = new Sequelize(
-  process.env.DB_NAME || "school_management",
+  process.env.DB_NAME || "ass2_sms_db",
   process.env.DB_USERNAME || "root",
   process.env.DB_PASSWORD || "",
   {
@@ -17,7 +17,7 @@ export const sequelize = new Sequelize(
       acquire: 30000,
       idle: 10000,
     },
-  }
+  },
 );
 
 export const testDatabaseConnection = async (): Promise<void> => {
