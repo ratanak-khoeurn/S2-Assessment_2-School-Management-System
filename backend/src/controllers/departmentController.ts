@@ -5,24 +5,7 @@ export const getDepartments = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
-  try {
-    const departments = await Department.findAll({
-      order: [["id", "DESC"]],
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "Departments retrieved successfully",
-      data: departments,
-    });
-  } catch (error) {
-    console.error("Get departments error:", error);
-
-    res.status(500).json({
-      success: false,
-      message: "Failed to retrieve departments",
-    });
-  }
+  res.redirect("/admin/departments");
 };
 
 export const getDepartmentById = async (

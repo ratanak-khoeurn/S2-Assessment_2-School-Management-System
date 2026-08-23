@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Departments - School Management System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        .container {
+            padding: 24px;
+        }
+
+        /* ================= HEADER ================= */
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .subtitle {
+            margin-top: 5px;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 7px;
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #334155;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        /* ================= CONTROLS ================= */
+
+        .controls {
+            background: white;
+            padding: 14px 18px;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .search-box span {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 12px 10px 36px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            outline: none;
+            font-size: 13px;
+        }
+
+        .search-box input:focus {
+            border-color: #3b82f6;
+        }
+
+        .view-switch {
+            display: flex;
+            gap: 4px;
+            background: #f1f5f9;
+            padding: 3px;
+            border-radius: 6px;
+        }
+
+        .view-switch button {
+            border: none;
+            background: transparent;
+            padding: 7px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .view-switch button.active {
+            background: white;
+            color: #1e293b;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* ================= GRID ================= */
+
+        .department-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill,
+                    minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .department-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        .department-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .department-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .department-code {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .department-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .department-id {
+            margin-top: 3px;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .status {
+            padding: 4px 9px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-inactive {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .description {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 7px;
+            min-height: 60px;
+
+            color: #475569;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .card-actions {
+            margin-top: 18px;
+            padding-top: 12px;
+            border-top: 1px solid #f1f5f9;
+
+            display: flex;
+            justify-content: flex-end;
+            gap: 6px;
+        }
+
+        .icon-btn {
+            border: none;
+            border-radius: 5px;
+            padding: 7px 9px;
+            cursor: pointer;
+            background: #f1f5f9;
+        }
+
+        .icon-btn:hover {
+            background: #e2e8f0;
+        }
+
+        /* ================= TABLE ================= */
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            overflow-x: auto;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 13px 18px;
+
+            text-align: left;
+
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+
+            text-transform: uppercase;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        td {
+            padding: 14px 18px;
+            font-size: 13px;
+            color: #334155;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .table-actions {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        /* ================= EMPTY ================= */
+
+        .empty {
+            background: white;
+            padding: 50px;
+            text-align: center;
+            border-radius: 10px;
+            color: #64748b;
+        }
+
+        .empty-icon {
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+
+        /* ================= MODAL ================= */
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+
+            background: rgba(15, 23, 42, 0.45);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            z-index: 1000;
+        }
+
+        .modal {
+            background: white;
+            width: 100%;
+            max-width: 520px;
+
+            border-radius: 12px;
+            padding: 24px;
+
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            border: none;
+            background: #f1f5f9;
+
+            width: 30px;
+            height: 30px;
+
+            border-radius: 6px;
+
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+
+            margin-bottom: 6px;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            color: #334155;
+        }
+
+        .form-control {
+            width: 100%;
+
+            padding: 10px 12px;
+
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+
+            font-size: 13px;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: #3b82f6;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+
+            margin-top: 20px;
+        }
+
+        /* ================= DETAILS ================= */
+
+        .detail-box {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+
+            padding: 9px 0;
+
+            font-size: 13px;
+        }
+
+        .detail-label {
+            color: #64748b;
+        }
+
+        .detail-value {
+            color: #1e293b;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        /* ================= ALERT ================= */
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 7px;
+            margin-bottom: 15px;
+
+            font-size: 13px;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 700px) {
+
+            .container {
+                padding: 15px;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+
+            .view-switch {
+                align-self: flex-end;
+            }
+
+            .department-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- ================= HEADER ================= -->
+
+        <div class="header">
+
+            <div>
+                <div class="title">
+                    Departments
+                </div>
+
+                <div class="subtitle">
+                    Manage academic departments and department information.
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="openAddModal()">
+                ＋ Add Department
+            </button>
+
+        </div>
+
+
+        <!-- ================= ERROR ================= -->
+
+        <div id="errorMessage" class="alert alert-error hidden"></div>
+
+
+        <!-- ================= CONTROLS ================= -->
+
+        <div class="controls">
+
+            <div class="search-box">
+
+                <span>🔍</span>
+
+                <input type="text" id="searchInput" placeholder="Search department or code..."
+                    oninput="searchDepartments()">
+
+            </div>
+
+
+            <div class="view-switch">
+
+                <button id="gridButton" class="active" onclick="changeView('grid')">
+                    ▦ Grid
+                </button>
+
+                <button id="tableButton" onclick="changeView('table')">
+                    ☰ List
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= GRID ================= -->
+
+        <div id="gridView" class="department-grid"></div>
+
+
+        <!-- ================= TABLE ================= -->
+
+        <div id="tableView" class="table-container hidden">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Code</th>
+
+                        <th>Department Name</th>
+
+                        <th>Description</th>
+
+                        <th>Status</th>
+
+                        <th style="text-align:right">
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="departmentTableBody"></tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- ================= EMPTY ================= -->
+
+        <div id="emptyMessage" class="empty hidden">
+
+            <div class="empty-icon">
+                🏢
+            </div>
+
+            <strong>
+                No departments found
+            </strong>
+
+            <div style="font-size:12px;margin-top:5px">
+                Try another search or create a new department.
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+     ADD / EDIT MODAL
+===================================================== -->
+
+    <div id="formModal" class="modal-overlay hidden">
+
+        <div class="modal">
+
+            <div class="modal-header">
+
+                <div id="formModalTitle" class="modal-title">
+                    Add New Department
+                </div>
+
+                <button class="close-btn" onclick="closeFormModal()">
+                    ✕
+                </button>
+
+            </div>
+
+
+            <form id="departmentForm">
+
+                <input type="hidden" id="departmentId">
+
+
+                <!-- CODE -->
+
+                <div class="form-group">
+
+                    <label class="form-label">
+                        Department Code *
+                    </label>
+
+                    <input type="text" id="departmentCode" class="form-control" placeholder="e.g. IT" maxlength="20"
+                        required>
+
+                </div>
+
+
+                <!-- NAME -->
+
+                <div class="form-group">
+
+                    <label class="form-label">
+                        Department Name *
+                    </label>
+
+                    <input type="text" id="departmentName" class="form-control"
+                        placeholder="e.g. Information Technology" maxlength="100" required>
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="form-group">
+
+                    <label class="form-label">
+                        Description
+                    </label>
+
+                    <textarea id="description" class="form-control"
+                        placeholder="Enter department description..."></textarea>
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div class="form-group">
+
+                    <label class="form-label">
+                        Status
+                    </label>
+
+                    <select id="status" class="form-control">
+
+                        <option value="active">
+                            Active
+                        </option>
+
+                        <option value="inactive">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- BUTTONS -->
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" onclick="closeFormModal()">
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="btn btn-primary" id="submitButton">
+                        Create Department
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+     VIEW DETAILS MODAL
+===================================================== -->
+
+    <div id="viewModal" class="modal-overlay hidden">
+
+        <div class="modal">
+
+            <div class="modal-header">
+
+                <div class="modal-title">
+                    Department Details
+                </div>
+
+                <button class="close-btn" onclick="closeViewModal()">
+                    ✕
+                </button>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        ID
+                    </span>
+
+                    <span id="viewId" class="detail-value"></span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Department Code
+                    </span>
+
+                    <span id="viewCode" class="detail-value"></span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Department Name
+                    </span>
+
+                    <span id="viewName" class="detail-value"></span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Description
+                    </span>
+
+                    <span id="viewDescription" class="detail-value"></span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Status
+                    </span>
+
+                    <span id="viewStatus" class="detail-value"></span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Created
+                    </span>
+
+                    <span id="viewCreatedAt" class="detail-value"></span>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button class="btn btn-secondary" onclick="closeViewModal()">
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+     DELETE MODAL
+===================================================== -->
+
+    <div id="deleteModal" class="modal-overlay hidden">
+
+        <div class="modal" style="max-width:400px">
+
+            <div class="modal-title" style="color:#dc2626;margin-bottom:10px">
+                Delete Department
+            </div>
+
+
+            <p style="
+                font-size:13px;
+                color:#475569;
+                line-height:1.6;
+            ">
+                Are you sure you want to delete
+
+                <strong id="deleteDepartmentName"></strong>?
+
+                <br>
+
+                This action cannot be undone.
+            </p>
+
+
+            <div class="modal-footer">
+
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">
+                    Cancel
+                </button>
+
+                <button class="btn btn-danger" onclick="confirmDelete()">
+                    Delete
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        // =====================================================
+        // CONFIGURATION
+        // =====================================================
+
+        const API_URL = "/departments";
+
+        let departments = [];
+
+        let currentView = "grid";
+
+        let departmentToDelete = null;
+
+
+        // =====================================================
+        // LOAD DEPARTMENTS
+        // =====================================================
+
+        async function loadDepartments() {
+
+            try {
+
+                hideError();
+
+                const response = await fetch(API_URL);
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        result.message ||
+                        "Failed to load departments"
+                    );
+                }
+
+                /*
+                 * Expected API response:
+                 *
+                 * {
+                 *   success: true,
+                 *   data: [...]
+                 * }
+                 */
+
+                departments = result.data || [];
+
+                renderDepartments();
+
+            } catch (error) {
+
+                console.error(
+                    "Get departments error:",
+                    error
+                );
+
+                showError(
+                    error.message ||
+                    "Failed to load departments."
+                );
+
+            }
+
+        }
+
+
+        // =====================================================
+        // RENDER
+        // =====================================================
+
+        function renderDepartments() {
+
+            const search =
+                document
+                    .getElementById("searchInput")
+                    .value
+                    .toLowerCase()
+                    .trim();
+
+
+            const filtered =
+                departments.filter(department => {
+
+                    return (
+
+                        department.departmentName
+                            .toLowerCase()
+                            .includes(search)
+
+                        ||
+
+                        department.departmentCode
+                            .toLowerCase()
+                            .includes(search)
+
+                        ||
+
+                        (
+                            department.description || ""
+                        )
+                            .toLowerCase()
+                            .includes(search)
+
+                    );
+
+                });
+
+
+            renderGrid(filtered);
+
+            renderTable(filtered);
+
+
+            const emptyMessage =
+                document.getElementById(
+                    "emptyMessage"
+                );
+
+
+            if (filtered.length === 0) {
+
+                emptyMessage.classList.remove(
+                    "hidden"
+                );
+
+            } else {
+
+                emptyMessage.classList.add(
+                    "hidden"
+                );
+
+            }
+
+        }
+
+
+        // =====================================================
+        // GRID
+        // =====================================================
+
+        function renderGrid(data) {
+
+            const grid =
+                document.getElementById(
+                    "gridView"
+                );
+
+
+            grid.innerHTML = "";
+
+
+            data.forEach(department => {
+
+                const statusClass =
+                    department.status === "active"
+                        ? "status-active"
+                        : "status-inactive";
+
+
+                grid.innerHTML += `
+
+                <div class="department-card">
+
+                    <div class="department-header">
+
+                        <div class="department-info">
+
+                            <div class="department-code">
+                                ${escapeHtml(
+                    department.departmentCode
+                )}
+                            </div>
+
+                            <div>
+
+                                <div class="department-name">
+                                    ${escapeHtml(
+                    department.departmentName
+                )}
+                                </div>
+
+                                <div class="department-id">
+                                    ID: ${department.id}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <span
+                            class="status ${statusClass}"
+                        >
+                            ${escapeHtml(
+                    department.status
+                )}
+                        </span>
+
+                    </div>
+
+
+                    <div class="description">
+
+                        ${department.description
+                        ? escapeHtml(
+                            department.description
+                        )
+                        : "No description available."
+                    }
+
+                    </div>
+
+
+                    <div class="card-actions">
+
+                        <button
+                            class="icon-btn"
+                            onclick="viewDepartment(${department.id})"
+                            title="View"
+                        >
+                            👁️
+                        </button>
+
+                        <button
+                            class="icon-btn"
+                            onclick="editDepartment(${department.id})"
+                            title="Edit"
+                        >
+                            ✏️
+                        </button>
+
+                        <button
+                            class="icon-btn"
+                            onclick="openDeleteModal(${department.id})"
+                            title="Delete"
+                        >
+                            🗑️
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+            });
+
+        }
+
+
+        // =====================================================
+        // TABLE
+        // =====================================================
+
+        function renderTable(data) {
+
+            const tbody =
+                document.getElementById(
+                    "departmentTableBody"
+                );
+
+
+            tbody.innerHTML = "";
+
+
+            data.forEach(department => {
+
+                const statusClass =
+                    department.status === "active"
+                        ? "status-active"
+                        : "status-inactive";
+
+
+                tbody.innerHTML += `
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            ${escapeHtml(
+                    department.departmentCode
+                )}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                    department.departmentName
+                )}
+                    </td>
+
+                    <td>
+                        ${department.description
+                        ? escapeHtml(
+                            department.description
+                        )
+                        : "—"
+                    }
+                    </td>
+
+                    <td>
+
+                        <span
+                            class="status ${statusClass}"
+                        >
+                            ${escapeHtml(
+                        department.status
+                    )}
+                        </span>
+
+                    </td>
+
+                    <td class="table-actions">
+
+                        <button
+                            class="icon-btn"
+                            onclick="viewDepartment(${department.id})"
+                        >
+                            👁️
+                        </button>
+
+                        <button
+                            class="icon-btn"
+                            onclick="editDepartment(${department.id})"
+                        >
+                            ✏️
+                        </button>
+
+                        <button
+                            class="icon-btn"
+                            onclick="openDeleteModal(${department.id})"
+                        >
+                            🗑️
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            });
+
+        }
+
+
+        // =====================================================
+        // SEARCH
+        // =====================================================
+
+        function searchDepartments() {
+
+            renderDepartments();
+
+        }
+
+
+        // =====================================================
+        // CHANGE VIEW
+        // =====================================================
+
+        function changeView(view) {
+
+            currentView = view;
+
+
+            const grid =
+                document.getElementById(
+                    "gridView"
+                );
+
+            const table =
+                document.getElementById(
+                    "tableView"
+                );
+
+
+            const gridButton =
+                document.getElementById(
+                    "gridButton"
+                );
+
+            const tableButton =
+                document.getElementById(
+                    "tableButton"
+                );
+
+
+            if (view === "grid") {
+
+                grid.classList.remove(
+                    "hidden"
+                );
+
+                table.classList.add(
+                    "hidden"
+                );
+
+                gridButton.classList.add(
+                    "active"
+                );
+
+                tableButton.classList.remove(
+                    "active"
+                );
+
+            } else {
+
+                grid.classList.add(
+                    "hidden"
+                );
+
+                table.classList.remove(
+                    "hidden"
+                );
+
+                gridButton.classList.remove(
+                    "active"
+                );
+
+                tableButton.classList.add(
+                    "active"
+                );
+
+            }
+
+        }
+
+
+        // =====================================================
+        // OPEN ADD
+        // =====================================================
+
+        function openAddModal() {
+
+            document.getElementById(
+                "formModalTitle"
+            ).textContent =
+                "Add New Department";
+
+
+            document.getElementById(
+                "submitButton"
+            ).textContent =
+                "Create Department";
+
+
+            document.getElementById(
+                "departmentId"
+            ).value = "";
+
+
+            document.getElementById(
+                "departmentForm"
+            ).reset();
+
+
+            document.getElementById(
+                "status"
+            ).value = "active";
+
+
+            document.getElementById(
+                "formModal"
+            ).classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        // =====================================================
+        // CLOSE FORM
+        // =====================================================
+
+        function closeFormModal() {
+
+            document.getElementById(
+                "formModal"
+            ).classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        // =====================================================
+        // CREATE / UPDATE
+        // =====================================================
+
+        document
+            .getElementById("departmentForm")
+            .addEventListener(
+                "submit",
+                async function (event) {
+
+                    event.preventDefault();
+
+
+                    const id =
+                        document.getElementById(
+                            "departmentId"
+                        ).value;
+
+
+                    const departmentCode =
+                        document.getElementById(
+                            "departmentCode"
+                        ).value.trim();
+
+
+                    const departmentName =
+                        document.getElementById(
+                            "departmentName"
+                        ).value.trim();
+
+
+                    const description =
+                        document.getElementById(
+                            "description"
+                        ).value.trim();
+
+
+                    const status =
+                        document.getElementById(
+                            "status"
+                        ).value;
+
+
+                    const data = {
+
+                        departmentCode,
+
+                        departmentName,
+
+                        description:
+                            description || null,
+
+                        status
+
+                    };
+
+
+                    try {
+
+                        const response =
+                            await fetch(
+                                id
+                                    ? `${API_URL}/${id}`
+                                    : API_URL,
+                                {
+
+                                    method:
+                                        id
+                                            ? "PUT"
+                                            : "POST",
+
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json"
+                                    },
+
+                                    body:
+                                        JSON.stringify(
+                                            data
+                                        )
+
+                                }
+                            );
+
+
+                        const result =
+                            await response.json();
+
+
+                        if (!response.ok) {
+
+                            throw new Error(
+                                result.message ||
+                                "Request failed"
+                            );
+
+                        }
+
+
+                        closeFormModal();
+
+                        await loadDepartments();
+
+
+                    } catch (error) {
+
+                        console.error(error);
+
+                        alert(
+                            error.message ||
+                            "Something went wrong."
+                        );
+
+                    }
+
+                }
+            );
+
+
+        // =====================================================
+        // EDIT
+        // =====================================================
+
+        function editDepartment(id) {
+
+            const department =
+                departments.find(
+                    item =>
+                        item.id === id
+                );
+
+
+            if (!department) {
+                return;
+            }
+
+
+            document.getElementById(
+                "formModalTitle"
+            ).textContent =
+                "Edit Department";
+
+
+            document.getElementById(
+                "submitButton"
+            ).textContent =
+                "Save Changes";
+
+
+            document.getElementById(
+                "departmentId"
+            ).value =
+                department.id;
+
+
+            document.getElementById(
+                "departmentCode"
+            ).value =
+                department.departmentCode;
+
+
+            document.getElementById(
+                "departmentName"
+            ).value =
+                department.departmentName;
+
+
+            document.getElementById(
+                "description"
+            ).value =
+                department.description || "";
+
+
+            document.getElementById(
+                "status"
+            ).value =
+                department.status;
+
+
+            document.getElementById(
+                "formModal"
+            ).classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        // =====================================================
+        // VIEW DETAILS
+        // =====================================================
+
+        function viewDepartment(id) {
+
+            const department =
+                departments.find(
+                    item =>
+                        item.id === id
+                );
+
+
+            if (!department) {
+                return;
+            }
+
+
+            document.getElementById(
+                "viewId"
+            ).textContent =
+                department.id;
+
+
+            document.getElementById(
+                "viewCode"
+            ).textContent =
+                department.departmentCode;
+
+
+            document.getElementById(
+                "viewName"
+            ).textContent =
+                department.departmentName;
+
+
+            document.getElementById(
+                "viewDescription"
+            ).textContent =
+                department.description ||
+                "No description";
+
+
+            document.getElementById(
+                "viewStatus"
+            ).textContent =
+                department.status;
+
+
+            document.getElementById(
+                "viewCreatedAt"
+            ).textContent =
+                department.createdAt
+                    ? new Date(
+                        department.createdAt
+                    ).toLocaleDateString()
+                    : "—";
+
+
+            document.getElementById(
+                "viewModal"
+            ).classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        // =====================================================
+        // CLOSE VIEW
+        // =====================================================
+
+        function closeViewModal() {
+
+            document.getElementById(
+                "viewModal"
+            ).classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        // =====================================================
+        // DELETE MODAL
+        // =====================================================
+
+        function openDeleteModal(id) {
+
+            const department =
+                departments.find(
+                    item =>
+                        item.id === id
+                );
+
+
+            if (!department) {
+                return;
+            }
+
+
+            departmentToDelete =
+                department;
+
+
+            document.getElementById(
+                "deleteDepartmentName"
+            ).textContent =
+                department.departmentName;
+
+
+            document.getElementById(
+                "deleteModal"
+            ).classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        function closeDeleteModal() {
+
+            departmentToDelete = null;
+
+
+            document.getElementById(
+                "deleteModal"
+            ).classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        // =====================================================
+        // CONFIRM DELETE
+        // =====================================================
+
+        async function confirmDelete() {
+
+            if (!departmentToDelete) {
+                return;
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/${departmentToDelete.id}`,
+                        {
+                            method: "DELETE"
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        result.message ||
+                        "Failed to delete department"
+                    );
+
+                }
+
+
+                closeDeleteModal();
+
+                await loadDepartments();
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert(
+                    error.message ||
+                    "Failed to delete department."
+                );
+
+            }
+
+        }
+
+
+        // =====================================================
+        // ERROR
+        // =====================================================
+
+        function showError(message) {
+
+            const element =
+                document.getElementById(
+                    "errorMessage"
+                );
+
+
+            element.textContent = message;
+
+            element.classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        function hideError() {
+
+            document
+                .getElementById("errorMessage")
+                .classList.add(
+                    "hidden"
+                );
+
+        }
+
+
+        // =====================================================
+        // SECURITY
+        // Prevent HTML injection when displaying database data
+        // =====================================================
+
+        function escapeHtml(value) {
+
+            const div =
+                document.createElement("div");
+
+            div.textContent =
+                value ?? "";
+
+            return div.innerHTML;
+
+        }
+
+
+        // =====================================================
+        // INITIAL LOAD
+        // =====================================================
+
+        loadDepartments();
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,312 @@
+<aside id="sidebar" style="
+        width: 240px;
+        min-width: 240px;
+        background: linear-gradient(180deg, #0f2744 0%, #1a3a6b 100%);
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        transition: width 0.25s, min-width 0.25s;
+        overflow: hidden;
+        flex-shrink: 0;
+    ">
+
+    <!-- ================= LOGO ================= -->
+    <div style="
+            padding: 20px 18px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        ">
+        <div style="display: flex; align-items: center; gap: 10px;">
+
+            <div style="
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 8px;
+                    background: #fff;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    overflow: hidden;
+                ">
+                <img src="/images/up-image.png" alt="School Logo" style="
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
+                    " />
+            </div>
+
+            <div>
+                <div style="
+                        font-size: 14px;
+                        font-weight: 700;
+                        color: #fff;
+                    ">
+                    School Management
+                </div>
+
+                <div style="
+                        font-size: 10px;
+                        color: rgba(255,255,255,0.5);
+                        margin-top: 2px;
+                    ">
+                    Administration Panel
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ================= NAVIGATION ================= -->
+    <nav style="
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        ">
+
+        <div style="
+                font-size: 10px;
+                font-weight: 700;
+                color: rgba(255,255,255,0.35);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                padding: 8px 18px;
+            ">
+            Main Menu
+        </div>
+
+
+        <!-- Dashboard -->
+        <a href="/dashboard" class="sidebar-link <%= activeNav === 'Dashboard' ? 'active' : '' %>">
+            <span class="sidebar-icon">📊</span>
+            <span>Dashboard</span>
+        </a>
+
+
+        <!-- Departments -->
+        <a href="/departments" class="sidebar-link <%= activeNav === 'Departments' ? 'active' : '' %>">
+            <span class="sidebar-icon">🏢</span>
+            <span>Departments</span>
+        </a>
+
+
+        <!-- Teachers -->
+        <a href="/teachers" class="sidebar-link <%= activeNav === 'Teachers' ? 'active' : '' %>">
+            <span class="sidebar-icon">👨‍🏫</span>
+            <span>Teachers</span>
+        </a>
+
+
+        <!-- Students -->
+        <a href="/students" class="sidebar-link <%= activeNav === 'Students' ? 'active' : '' %>">
+            <span class="sidebar-icon">🎓</span>
+            <span>Students</span>
+        </a>
+
+
+        <!-- Subjects -->
+        <a href="/subjects" class="sidebar-link <%= activeNav === 'Subjects' ? 'active' : '' %>">
+            <span class="sidebar-icon">📚</span>
+            <span>Subjects</span>
+        </a>
+
+
+        <!-- Classes -->
+        <a href="/classes" class="sidebar-link <%= activeNav === 'Classes' ? 'active' : '' %>">
+            <span class="sidebar-icon">🏫</span>
+            <span>Classes</span>
+        </a>
+
+
+        <!-- Attendance -->
+        <a href="/attendance" class="sidebar-link <%= activeNav === 'Attendance' ? 'active' : '' %>">
+            <span class="sidebar-icon">📝</span>
+            <span>Attendance</span>
+        </a>
+
+
+        <!-- Reports -->
+        <a href="/reports" class="sidebar-link <%= activeNav === 'Reports' ? 'active' : '' %>">
+            <span class="sidebar-icon">📈</span>
+            <span>Reports</span>
+        </a>
+
+
+        <!-- ================= SETUP ================= -->
+
+        <div style="
+                font-size: 10px;
+                font-weight: 700;
+                color: rgba(255,255,255,0.35);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                padding: 18px 18px 8px;
+            ">
+            Setup
+        </div>
+
+
+        <a href="/academic-programs" class="sidebar-link <%= activeNav === 'Academic Programs' ? 'active' : '' %>">
+            <span class="sidebar-icon">🎓</span>
+            <span>Academic Programs</span>
+        </a>
+
+
+        <a href="/buildings" class="sidebar-link <%= activeNav === 'Buildings' ? 'active' : '' %>">
+            <span class="sidebar-icon">🏢</span>
+            <span>Buildings</span>
+        </a>
+
+
+        <a href="/campuses" class="sidebar-link <%= activeNav === 'Campuses' ? 'active' : '' %>">
+            <span class="sidebar-icon">📍</span>
+            <span>Campuses</span>
+        </a>
+
+
+        <a href="/education" class="sidebar-link <%= activeNav === 'Education' ? 'active' : '' %>">
+            <span class="sidebar-icon">📖</span>
+            <span>Education</span>
+        </a>
+
+
+        <a href="/fees" class="sidebar-link <%= activeNav === 'Fees' ? 'active' : '' %>">
+            <span class="sidebar-icon">💰</span>
+            <span>Fees</span>
+        </a>
+
+
+        <a href="/student-cards" class="sidebar-link <%= activeNav === 'Student Cards' ? 'active' : '' %>">
+            <span class="sidebar-icon">🪪</span>
+            <span>Student Card Printing</span>
+        </a>
+
+    </nav>
+
+
+    <!-- ================= USER PROFILE ================= -->
+
+    <div style="
+            padding: 14px 18px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        ">
+
+        <div style="
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 12px;
+            ">
+
+            <div style="
+                    width: 34px;
+                    height: 34px;
+                    border-radius: 50%;
+                    background: #3b82f6;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #fff;
+                    font-size: 14px;
+                    font-weight: 700;
+                ">
+                A
+            </div>
+
+            <div>
+                <div style="
+                        font-size: 12px;
+                        font-weight: 600;
+                    ">
+                    Admin
+                </div>
+
+                <div style="
+                        font-size: 10px;
+                        color: rgba(255,255,255,0.5);
+                    ">
+                    Administrator
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- Logout -->
+        <form action="/logout" method="POST">
+
+            <button type="submit" style="
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    width: 100%;
+                    color: rgba(255,255,255,0.6);
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    font-size: 13px;
+                    padding: 0;
+                ">
+                <span>🚪</span>
+                <span>Logout</span>
+            </button>
+
+        </form>
+
+    </div>
+
+</aside>
+
+
+<!-- ================= SIDEBAR CSS ================= -->
+
+<style>
+    .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        width: 100%;
+        box-sizing: border-box;
+
+        padding: 10px 18px;
+
+        background: transparent;
+
+        border-top: none;
+        border-right: none;
+        border-bottom: none;
+        border-left: 3px solid transparent;
+
+        color: rgba(255, 255, 255, 0.7);
+
+        cursor: pointer;
+
+        font-size: 13px;
+        font-weight: 400;
+
+        text-align: left;
+        text-decoration: none;
+
+        transition: all 0.15s;
+    }
+
+    .sidebar-link:hover {
+        background: rgba(96, 165, 250, 0.10);
+        color: #60a5fa;
+    }
+
+    .sidebar-link.active {
+        background: rgba(96, 165, 250, 0.18);
+        border-left: 3px solid #60a5fa;
+        color: #60a5fa;
+        font-weight: 600;
+        border-radius: 0 6px 6px 0;
+    }
+
+    .sidebar-icon {
+        width: 20px;
+        min-width: 20px;
+        text-align: center;
+        font-size: 16px;
+    }
+</style>

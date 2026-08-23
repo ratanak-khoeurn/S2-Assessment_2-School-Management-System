@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>School Management System</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .app {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            width: 240px;
+            background: #0f172a;
+            color: white;
+            transition: 0.3s;
+            flex-shrink: 0;
+        }
+
+        .sidebar.closed {
+            width: 70px;
+        }
+
+        .sidebar-header {
+            height: 65px;
+            display: flex;
+            align-items: center;
+            padding: 0 18px;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .logo {
+            width: 36px;
+            height: 36px;
+            background: #3b82f6;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+        }
+
+        .school-name {
+            margin-left: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .sidebar.closed .school-name,
+        .sidebar.closed .nav-text {
+            display: none;
+        }
+
+        .nav {
+            padding: 15px 10px;
+        }
+
+        .nav-title {
+            color: #64748b;
+            font-size: 10px;
+            text-transform: uppercase;
+            padding: 10px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 12px;
+            margin-bottom: 4px;
+            border-radius: 7px;
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: #1e293b;
+            color: white;
+        }
+
+        .nav-item.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .nav-icon {
+            width: 22px;
+            text-align: center;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ================= HEADER ================= */
+
+        .header {
+            height: 65px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-button {
+            border: none;
+            background: #f1f5f9;
+            border-radius: 6px;
+            padding: 8px 10px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .notification {
+            position: relative;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -6px;
+            right: -7px;
+            background: #ef4444;
+            color: white;
+            font-size: 9px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .profile-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #dbeafe;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .profile-name {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* ================= CONTENT ================= */
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .page-description {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 18px;
+        }
+
+        /* ================= STAT CARDS ================= */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 16px 18px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .stat-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #64748b;
+            margin-bottom: 3px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .stat-change {
+            font-size: 11px;
+            color: #10b981;
+            margin-top: 3px;
+        }
+
+        /* ================= QUICK ACTIONS ================= */
+
+        .section-card {
+            background: white;
+            border-radius: 10px;
+            padding: 16px 18px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .quick-action {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .quick-action:hover {
+            background: #f1f5f9;
+        }
+
+        .quick-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .quick-text {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* ================= CHARTS ================= */
+
+        .charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr 300px;
+            gap: 14px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 10px;
+            padding: 16px 18px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        .chart-placeholder {
+            height: 210px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #94a3b8;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        /* ================= NOTICES ================= */
+
+        .notice {
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .notice:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .notice-title {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .notice-description {
+            font-size: 11px;
+            color: #64748b;
+            margin: 3px 0;
+        }
+
+        .notice-date {
+            font-size: 10px;
+            color: #94a3b8;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1000px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .charts {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                position: fixed;
+                z-index: 1000;
+                height: 100vh;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-name {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- ================= SIDEBAR ================= -->
+
+        <aside class="sidebar" id="sidebar">
+
+            <div class="sidebar-header">
+                <div class="logo">
+                    SMS
+                </div>
+
+                <div class="school-name">
+                    School Management
+                </div>
+            </div>
+
+            <nav class="nav">
+
+                <div class="nav-title">
+                    Main Menu
+                </div>
+
+                <a href="/dashboard" class="nav-item active">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+
+                <a href="/departments" class="nav-item">
+                    <span class="nav-icon">🏢</span>
+                    <span class="nav-text">Departments</span>
+                </a>
+
+                <a href="/teachers" class="nav-item">
+                    <span class="nav-icon">👨‍🏫</span>
+                    <span class="nav-text">Teachers</span>
+                </a>
+
+                <a href="/students" class="nav-item">
+                    <span class="nav-icon">🎓</span>
+                    <span class="nav-text">Students</span>
+                </a>
+
+                <a href="/subjects" class="nav-item">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-text">Subjects</span>
+                </a>
+
+                <a href="/classes" class="nav-item">
+                    <span class="nav-icon">🏫</span>
+                    <span class="nav-text">Classes</span>
+                </a>
+
+                <a href="/attendance" class="nav-item">
+                    <span class="nav-icon">📅</span>
+                    <span class="nav-text">Attendance</span>
+                </a>
+
+                <div class="nav-title">
+                    Management
+                </div>
+
+                <a href="/reports" class="nav-item">
+                    <span class="nav-icon">📈</span>
+                    <span class="nav-text">Reports</span>
+                </a>
+
+                <a href="/settings" class="nav-item">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">Settings</span>
+                </a>
+
+            </nav>
+
+        </aside>
+
+
+        <!-- ================= MAIN ================= -->
+
+        <div class="main">
+
+            <!-- ================= HEADER ================= -->
+
+            <header class="header">
+
+                <div class="header-left">
+
+                    <button class="menu-button" onclick="toggleSidebar()">
+                        ☰
+                    </button>
+
+                    <span style="font-size: 13px; color: #64748b;">
+                        School Management System
+                    </span>
+
+                </div>
+
+
+                <div class="header-right">
+
+                    <div class="notification">
+                        🔔
+                        <span class="notification-badge">
+                            3
+                        </span>
+                    </div>
+
+
+                    <div class="profile">
+
+                        <div class="profile-avatar">
+                            AD
+                        </div>
+
+                        <div class="profile-name">
+                            Admin
+                        </div>
+
+                        <span>
+                            ▼
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- ================= CONTENT ================= -->
+
+            <main class="content">
+
+                <!-- PAGE HEADER -->
+
+                <div class="page-title">
+                    Dashboard
+                </div>
+
+                <div class="page-description">
+                    Welcome back, Admin! Here's what's happening in your school.
+                </div>
+
+
+                <!-- ================= STAT CARDS ================= -->
+
+                <div class="stats">
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon" style="background:#eff6ff;">
+                            👨‍🎓
+                        </div>
+
+                        <div>
+
+                            <div class="stat-label">
+                                Total Students
+                            </div>
+
+                            <div class="stat-value">
+                                1,245
+                            </div>
+
+                            <div class="stat-change">
+                                ↑ 8.2% this month
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon" style="background:#ecfdf5;">
+                            👨‍🏫
+                        </div>
+
+                        <div>
+
+                            <div class="stat-label">
+                                Total Teachers
+                            </div>
+
+                            <div class="stat-value">
+                                86
+                            </div>
+
+                            <div class="stat-change">
+                                ↑ 3.4% this month
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon" style="background:#fef3c7;">
+                            🏢
+                        </div>
+
+                        <div>
+
+                            <div class="stat-label">
+                                Departments
+                            </div>
+
+                            <div class="stat-value">
+                                12
+                            </div>
+
+                            <div class="stat-change">
+                                Active departments
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon" style="background:#fce7f3;">
+                            📚
+                        </div>
+
+                        <div>
+
+                            <div class="stat-label">
+                                Total Courses
+                            </div>
+
+                            <div class="stat-value">
+                                48
+                            </div>
+
+                            <div class="stat-change">
+                                Current semester
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================= QUICK ACTIONS ================= -->
+
+                <div class="section-card">
+
+                    <div class="section-title">
+                        Quick Actions
+                    </div>
+
+                    <div class="quick-actions">
+
+                        <button class="quick-action" onclick="location.href='/departments'">
+                            <div class="quick-icon">
+                                🏢
+                            </div>
+
+                            <span class="quick-text">
+                                Manage Departments
+                            </span>
+                        </button>
+
+
+                        <button class="quick-action" onclick="location.href='/teachers'">
+                            <div class="quick-icon">
+                                👨‍🏫
+                            </div>
+
+                            <span class="quick-text">
+                                Add Teacher
+                            </span>
+                        </button>
+
+
+                        <button class="quick-action" onclick="location.href='/students'">
+                            <div class="quick-icon">
+                                🎓
+                            </div>
+
+                            <span class="quick-text">
+                                Add Student
+                            </span>
+                        </button>
+
+
+                        <button class="quick-action" onclick="location.href='/reports'">
+                            <div class="quick-icon">
+                                📊
+                            </div>
+
+                            <span class="quick-text">
+                                Generate Report
+                            </span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================= CHARTS ================= -->
+
+                <div class="charts">
+
+                    <!-- STUDENTS / TEACHERS -->
+
+                    <div class="chart-card">
+
+                        <div class="section-title">
+                            Students & Teachers Overview
+                        </div>
+
+                        <div class="chart-placeholder">
+
+                            <div>
+                                📊 Student / Teacher Chart
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ATTENDANCE -->
+
+                    <div class="chart-card">
+
+                        <div class="section-title">
+                            Attendance Summary
+                        </div>
+
+                        <div class="chart-placeholder">
+
+                            <div style="text-align:center;">
+
+                                <div style="
+                                font-size:36px;
+                                font-weight:700;
+                                color:#3b82f6;
+                            ">
+                                    84%
+                                </div>
+
+                                <div style="
+                                font-size:11px;
+                                color:#94a3b8;
+                            ">
+                                    Overall Attendance
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- NOTICES -->
+
+                    <div class="chart-card">
+
+                        <div class="section-title" style="display:flex; gap:6px;">
+                            📢 Important Notices
+                        </div>
+
+
+                        <div class="notice">
+
+                            <div class="notice-title">
+                                Semester Registration
+                            </div>
+
+                            <div class="notice-description">
+                                Registration is now open.
+                            </div>
+
+                            <div class="notice-date">
+                                Aug 20, 2026
+                            </div>
+
+                        </div>
+
+
+                        <div class="notice">
+
+                            <div class="notice-title">
+                                Staff Meeting
+                            </div>
+
+                            <div class="notice-description">
+                                Monthly staff meeting.
+                            </div>
+
+                            <div class="notice-date">
+                                Aug 25, 2026
+                            </div>
+
+                        </div>
+
+
+                        <div class="notice">
+
+                            <div class="notice-title">
+                                Exam Schedule
+                            </div>
+
+                            <div class="notice-description">
+                                Final exam schedule published.
+                            </div>
+
+                            <div class="notice-date">
+                                Aug 28, 2026
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+        function toggleSidebar() {
+
+            const sidebar = document.getElementById("sidebar");
+
+            sidebar.classList.toggle("closed");
+
+        }
+
+    </script>
+
+</body>
+
+</html>

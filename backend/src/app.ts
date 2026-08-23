@@ -1,10 +1,18 @@
+import path from "node:path";
 import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import { apiRouter } from "./routes/api.routes.js";
+import authRoutes from "./routes/auth.js"
+import adminRoutes from "./routes/admin.routes.js"
 import { departmentRouter } from "./routes/department.js";
 
 export const createApp = (): Express => {
   const app = express();
+
+  // View engine (server-rendered admin panel)
+  app.set("view engine", "ejs");
+  app.set("views", path.join(process.cwd(), "views"));
 
   // Middlewares
   app.use(
@@ -15,6 +23,7 @@ export const createApp = (): Express => {
   );
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+  app.use(cookieParser());
 
   // Root / Health
   app.get("/", (_req: Request, res: Response) => {
@@ -30,6 +39,10 @@ export const createApp = (): Express => {
 
   // API Routes
   app.use("/api", apiRouter);
+  app.use('/auth', authRoutes);
+
+  // Server-rendered admin panel
+  app.use('/admin', adminRoutes);
 
   // 404 handler
   app.use((_req: Request, res: Response) => {
