@@ -9,7 +9,6 @@ import EduPortalDashboard from './pages/home/index';
 const Dashboard = () => <h2>Dashboard (Protected: Anyone logged in)</h2>;
 const AdminPanel = () => <h2>Admin Panel (Protected: Admins only)</h2>;
 const Unauthorized = () => <h2>403 - You cannot access this page</h2>;
-const HomePage = () => <h2>Welcome to home page</h2>;
 
 export default function App() {
 
