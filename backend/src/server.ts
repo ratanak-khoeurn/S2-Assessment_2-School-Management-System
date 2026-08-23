@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { createApp } from "./app.js";
 import { testDatabaseConnection, sequelize } from "./config/database.js";
-import "./models/index.js";
+import { Role } from "./models/index.js";
 
 dotenv.config();
 
@@ -19,6 +19,8 @@ app.listen(PORT, async () => {
   try {
     await sequelize.sync({ alter: false });
     console.log("📦 Sequelize models synchronized with MySQL database.");
+
+    await Role.findOrCreate({ where: { roleName: "admin" } });
   } catch (err) {
     console.warn("⚠️ Database sync skipped or database not yet created:", (err as Error).message);
   }

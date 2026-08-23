@@ -1,9 +1,38 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FormField, FormHeader, PasswordField, PrimaryButton, SocialButton, SocialDivider } from '../common/form';
 import { GoogleIcon } from '../register/icons';
+import { loginUser } from '../../services/authService';
+
+const INVALID_CREDENTIALS_MESSAGE = 'Invalid email or password. Please try again.';
 
 export default function LoginContainer() {
+    const navigate = useNavigate();
+
     const [showPassword, setShowPassword] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        setError(null);
+        setIsSubmitting(true);
+
+        try {
+            const success = await loginUser(email, password);
+
+            if (success) {
+                navigate('/');
+            } else {
+                setError(INVALID_CREDENTIALS_MESSAGE);
+            }
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     return (
         <div className="w-full max-w-xl px-1 sm:w-[90%] lg:w-[80%]">
@@ -20,13 +49,15 @@ export default function LoginContainer() {
             />
 
             <div className="w-full">
-                <form action="#" method="POST" className="space-y-5 sm:space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
                     <FormField
                         id="email"
                         label="Email address"
                         type="email"
                         placeholder="you@example.com"
                         autoComplete="email"
+                        value={email}
+                        onChange={(event) => setEmail(event.target.value)}
                     />
 
                     <PasswordField
@@ -36,6 +67,8 @@ export default function LoginContainer() {
                         autoComplete="current-password"
                         showPassword={showPassword}
                         onToggle={() => setShowPassword((value) => !value)}
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
                     />
 
                     <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -48,8 +81,16 @@ export default function LoginContainer() {
                         </a>
                     </div>
 
+                    {error && (
+                        <p role="alert" className="text-sm font-medium text-red-600">
+                            {error}
+                        </p>
+                    )}
+
                     <div className="pt-2">
-                        <PrimaryButton>Sign in</PrimaryButton>
+                        <PrimaryButton disabled={isSubmitting}>
+                            {isSubmitting ? 'Signing in…' : 'Sign in'}
+                        </PrimaryButton>
                     </div>
                 </form>
 

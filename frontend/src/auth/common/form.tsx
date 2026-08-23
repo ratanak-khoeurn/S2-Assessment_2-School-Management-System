@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ChangeEvent, ReactNode } from 'react';
 
 export function FormHeader({ title, subtitle }: { title: string; subtitle?: ReactNode }) {
     return (
@@ -17,6 +17,8 @@ export function FormField({
     autoComplete,
     rightContent,
     className = '',
+    value,
+    onChange,
 }: {
     id: string;
     label: string;
@@ -25,6 +27,8 @@ export function FormField({
     autoComplete?: string;
     rightContent?: ReactNode;
     className?: string;
+    value?: string;
+    onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 }) {
     return (
         <div>
@@ -39,6 +43,8 @@ export function FormField({
                     required
                     autoComplete={autoComplete}
                     placeholder={placeholder}
+                    value={value}
+                    onChange={onChange}
                     className={`block w-full border border-blue-400 bg-white px-4 py-3 text-base text-slate-700 shadow-sm transition placeholder:text-slate-400 focus:outline-none ${rightContent ? 'pr-11' : ''} ${className}`}
                 />
                 {rightContent}
@@ -54,6 +60,8 @@ export function PasswordField({
     autoComplete,
     showPassword,
     onToggle,
+    value,
+    onChange,
 }: {
     id: string;
     label: string;
@@ -61,6 +69,8 @@ export function PasswordField({
     autoComplete?: string;
     showPassword: boolean;
     onToggle: () => void;
+    value?: string;
+    onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 }) {
     return (
         <div>
@@ -75,6 +85,8 @@ export function PasswordField({
                     required
                     autoComplete={autoComplete}
                     placeholder={placeholder}
+                    value={value}
+                    onChange={onChange}
                     className="block w-full border border-blue-400 bg-white px-4 py-3 pr-11 text-base text-slate-700 shadow-sm transition placeholder:text-slate-400 focus:outline-none"
                 />
                 <button
@@ -119,11 +131,20 @@ export function SocialButton({
     );
 }
 
-export function PrimaryButton({ children, className = '' }: { children: ReactNode; className?: string }) {
+export function PrimaryButton({
+    children,
+    className = '',
+    disabled = false,
+}: {
+    children: ReactNode;
+    className?: string;
+    disabled?: boolean;
+}) {
     return (
         <button
             type="submit"
-            className={`flex w-full justify-center bg-blue-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-500 focus:outline-none ${className}`}
+            disabled={disabled}
+            className={`flex w-full justify-center bg-blue-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
         >
             {children}
         </button>

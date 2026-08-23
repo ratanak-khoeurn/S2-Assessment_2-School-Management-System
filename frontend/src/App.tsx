@@ -4,6 +4,7 @@ import ProtectedRoute from './ProtectedRoute';
 import LoginPage from './auth/login';
 import RegisterPage from './auth/register';
 import ForgotPassword from './auth/forgot-password';
+import EduPortalDashboard from './pages/home/index';
 
 const Dashboard = () => <h2>Dashboard (Protected: Anyone logged in)</h2>;
 const AdminPanel = () => <h2>Admin Panel (Protected: Admins only)</h2>;
@@ -23,7 +24,7 @@ export default function App() {
 
         {/* MIDDLEWARE LAYER 1: General Authentication */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<EduPortalDashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
 
