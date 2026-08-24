@@ -60,7 +60,7 @@ Build for production:
 ```bash
 npm run build
 ```
-
+Access the Frontend: http://localhost:5173
 ---
 
 ### 2. Backend Setup (Node.js + Express + Sequelize + MySQL)
@@ -103,6 +103,6 @@ Start production server:
 ```bash
 npm start
 ```
-
+Access the Backend: http://localhost:3000/admin
 
 

@@ -21,11 +21,11 @@ export interface AuthResult {
 
 export const loginUser = async (email: string, password: string): Promise<boolean> => {
     try {
-        const res = await api.post<LoginResponse> ('/auth/login', {email, password});
+        const res = await api.post<LoginResponse>('/auth/login', { email, password });
 
         localStorage.setItem('authToken', res.data.token);
         return true;
-    }catch (error) {
+    } catch (error) {
         return false;
     }
 }
@@ -46,6 +46,6 @@ export const registerUser = async (payload: RegisterPayload): Promise<AuthResult
 }
 
 export const logoutUser = (): void => {
-  localStorage.removeItem('authToken');
-  window.location.href = '/login';
+    localStorage.removeItem('authToken');
+    window.location.href = '/login';
 };

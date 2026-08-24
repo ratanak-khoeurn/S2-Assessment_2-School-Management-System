@@ -7,7 +7,6 @@ import ForgotPassword from './auth/forgot-password';
 import EduPortalDashboard from './pages/home/index';
 
 const Dashboard = () => <h2>Dashboard (Protected: Anyone logged in)</h2>;
-const AdminPanel = () => <h2>Admin Panel (Protected: Admins only)</h2>;
 const Unauthorized = () => <h2>403 - You cannot access this page</h2>;
 
 export default function App() {
@@ -21,15 +20,10 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
 
-        {/* MIDDLEWARE LAYER 1: General Authentication */}
+        {/* MIDDLEWARE LAYER: General Authentication for Students & Teachers */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<EduPortalDashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
-        </Route>
-
-        {/* MIDDLEWARE LAYER 2: Role-based Authorization */}
-        <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
-          <Route path="/admin" element={<AdminPanel />} />
         </Route>
 
         {/* Fallback route */}

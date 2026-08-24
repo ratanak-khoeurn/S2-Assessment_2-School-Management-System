@@ -3,61 +3,904 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard &middot; School Management System</title>
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js for Bar and Donut Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        * { box-sizing: border-box; }
-        body {
+        * {
+            box-sizing: border-box;
             margin: 0;
-            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-            background: #f1f5f9;
-            color: #0f172a;
+            padding: 0;
         }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #f1f5f9;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* Sidebar */
+        aside {
+            width: 240px;
+            min-width: 240px;
+            background: linear-gradient(180deg, #0f2744 0%, #1a3a6b 100%);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            transition: width 0.25s, min-width 0.25s;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        aside.collapsed {
+            width: 0;
+            min-width: 0;
+        }
+
+        .sidebar-logo {
+            padding: 20px 18px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-logo .brand-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+            font-size: 22px;
+        }
+
+        .logo-text h2 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .logo-text span {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            display: block;
+            margin-top: 2px;
+            white-space: nowrap;
+        }
+
+        .nav-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .nav-menu-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.35);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 8px 18px;
+        }
+
+        .nav-button {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            width: 100%;
+            padding: 10px 18px;
+            background: transparent;
+            border: none;
+            border-left: 3px solid transparent;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 400;
+            text-align: left;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+
+        .nav-button:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-button.active {
+            background: rgba(96, 165, 250, 0.18);
+            border-left: 3px solid #60a5fa;
+            color: #60a5fa;
+            font-weight: 600;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .nav-button .icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            padding: 14px 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .sidebar-user-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #3b82f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .logout-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            color: rgba(255, 255, 255, 0.6);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            padding: 0;
+            font-family: inherit;
+        }
+
+        .logout-link:hover {
+            color: #ffffff;
+        }
+
+        /* Main Area */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header */
         header {
+            background: #fff;
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+
+        .sidebar-toggle-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: #64748b;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .sidebar-toggle-btn:hover {
+            background: #f1f5f9;
+        }
+
+        .header-brand {
+            flex: 1;
+        }
+
+        .header-brand .title-main {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .header-brand .title-highlight {
+            font-size: 17px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-left: 5px;
+        }
+
+        .header-brand .subtitle {
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: 1px;
+        }
+
+        .notification-btn {
+            position: relative;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 9px;
+            border-radius: 10px;
+            padding: 1px 4px;
+            font-weight: 700;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .admin-profile .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #3b82f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* Body Main Content */
+        main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+        }
+
+        .page-header {
+            margin-bottom: 18px;
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+
+        /* Stat Cards */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px 18px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .stat-icon-wrapper {
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            flex-shrink: 0;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1.1;
+        }
+
+        .stat-change {
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .stat-change.up { color: #10b981; }
+        .stat-change.neutral { color: #94a3b8; }
+
+        /* Quick Actions */
+        .quick-actions-box {
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px 18px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+            margin-bottom: 20px;
+        }
+
+        .quick-actions-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 14px;
+        }
+
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .quick-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-family: inherit;
+            transition: all 0.15s;
+        }
+
+        .quick-action-btn:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .quick-action-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .quick-action-text {
+            font-size: 12px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        /* Charts & Notices Grid */
+        .charts-notices-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 300px;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .panel-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px 18px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+
+        /* Notices */
+        .notice-item {
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+        }
+
+        .notice-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .notice-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 2px;
+        }
+
+        .notice-desc {
+            font-size: 11px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .notice-date {
+            font-size: 10px;
+            color: #94a3b8;
+        }
+
+        /* Portal Switch Banner */
+        .portal-banner {
+            background: linear-gradient(135deg, #1e3a8a, #0f172a);
+            color: #ffffff;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 1rem 2rem;
-            background: #0f172a;
+            gap: 12px;
+        }
+
+        .portal-banner a {
+            background: #3b82f6;
             color: #fff;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
         }
-        header h1 { font-size: 1.125rem; margin: 0; }
-        header form { margin: 0; }
-        header button {
-            background: transparent;
-            border: 1px solid #475569;
-            color: #e2e8f0;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
+
+        .portal-banner a:hover {
+            background: #2563eb;
         }
-        header button:hover { background: #1e293b; }
-        main {
-            max-width: 720px;
-            margin: 3rem auto;
-            padding: 0 1.5rem;
+
+        @media (max-width: 1200px) {
+            .charts-notices-grid {
+                grid-template-columns: 1fr;
+            }
+            .stat-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .quick-actions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
-        .card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-        }
-        .card p { color: #475569; }
     </style>
 </head>
 <body>
-    <header>
-        <h1>School Management System &middot; Admin</h1>
-        <form method="POST" action="/admin/logout">
-            <button type="submit">Log out</button>
-        </form>
-    </header>
-    <main>
-        <div class="card">
-            <h2>Welcome, <%= admin.name %></h2>
-            <p>Signed in as <strong><%= admin.email %></strong>.</p>
+
+    <!-- Sidebar -->
+    <aside id="sidebar">
+        <!-- Logo -->
+        <div class="sidebar-logo">
+            <div class="brand-wrap">
+                <div class="logo-box">
+                    🎓
+                </div>
+                <div class="logo-text">
+                    <h2>School Management</h2>
+                    <span>Administration Panel</span>
+                </div>
+            </div>
         </div>
-    </main>
+
+        <!-- Navigation -->
+        <nav class="nav-container">
+            <div class="nav-menu-title">Main Menu</div>
+
+            <button class="nav-button active" onclick="switchNav('Dashboard', this)">
+                <span class="icon">🏠</span>
+                <span>Dashboard</span>
+            </button>
+
+            <button class="nav-button" onclick="switchNav('Departments', this)">
+                <span class="icon">🏢</span>
+                <span>Departments</span>
+            </button>
+
+            <button class="nav-button" onclick="switchNav('Teachers', this)">
+                <span class="icon">👨‍🏫</span>
+                <span>Teachers</span>
+            </button>
+
+            <button class="nav-button" onclick="switchNav('Students', this)">
+                <span class="icon">👨‍🎓</span>
+                <span>Students</span>
+            </button>
+
+            <button class="nav-button" onclick="switchNav('Subjects', this)">
+                <span class="icon">📚</span>
+                <span>Subjects</span>
+            </button>
+
+            <button class="nav-button" onclick="switchNav('Classes', this)">
+                <span class="icon">🏫</span>
+                <span>Classes</span>
+            </button>
+
+            <button class="nav-button" onclick="switchNav('Enrollments', this)">
+                <span class="icon">📝</span>
+                <span>Enrollments</span>
+            </button>
+
+            <button class="nav-button" onclick="switchNav('Attendance', this)">
+                <span class="icon">📋</span>
+                <span>Attendance</span>
+            </button>
+
+            <button class="nav-button" onclick="switchNav('Reports', this)">
+                <span class="icon">📊</span>
+                <span>Reports</span>
+            </button>
+
+            <button class="nav-button" onclick="switchNav('User Management', this)">
+                <span class="icon">👥</span>
+                <span>User Management</span>
+            </button>
+
+            <button class="nav-button" onclick="switchNav('Settings', this)">
+                <span class="icon">⚙️</span>
+                <span>Settings</span>
+            </button>
+        </nav>
+
+        <!-- User Profile & Logout -->
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <div class="sidebar-user-avatar">
+                    <%= admin.name ? admin.name.charAt(0).toUpperCase() : 'A' %>
+                </div>
+                <div>
+                    <div style="font-size: 12px; font-weight: 600;"><%= admin.name || 'Admin' %></div>
+                    <div style="font-size: 10px; color: rgba(255,255,255,0.5);">Administrator</div>
+                </div>
+            </div>
+
+            <form method="POST" action="/admin/logout" style="margin: 0;">
+                <button type="submit" class="logout-link">
+                    <span>🚪</span>
+                    <span>Logout</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Main Area -->
+    <div class="main-wrapper">
+        <!-- Header -->
+        <header>
+            <button class="sidebar-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle Navigation Sidebar">
+                ☰
+            </button>
+
+            <div class="header-brand">
+                <span class="title-main">School Management</span>
+                <span class="title-highlight">System</span>
+                <div class="subtitle">Administration Panel</div>
+            </div>
+
+            <div class="notification-btn" title="Notifications">
+                <span>🔔</span>
+                <span class="notification-badge">3</span>
+            </div>
+
+            <div class="admin-profile">
+                <div class="avatar">
+                    <%= admin.name ? admin.name.charAt(0).toUpperCase() : 'A' %>
+                </div>
+                <div>
+                    <div style="font-size: 13px; font-weight: 600; color: #1e293b;"><%= admin.name || 'Admin' %></div>
+                    <div style="font-size: 11px; color: #94a3b8;"><%= admin.role || 'Administrator' %></div>
+                </div>
+                <span style="color: #94a3b8; font-size: 12px;">▾</span>
+            </div>
+        </header>
+
+        <!-- Body Main Content -->
+        <main>
+            <!-- Link to React Student/Teacher Portal -->
+            <div class="portal-banner">
+                <div>
+                    <strong style="font-size: 13px;">Student & Teacher Management Portal (React)</strong>
+                    <div style="font-size: 11px; color: #93c5fd; margin-top: 2px;">
+                        The student/teacher frontend is running at <span style="text-decoration: underline;"><%= frontendUrl %>/login</span>
+                    </div>
+                </div>
+                <a href="<%= frontendUrl %>/login" target="_blank">Open Student / Teacher Portal →</a>
+            </div>
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="page-title" id="currentNavTitle">Dashboard</div>
+                <div class="page-subtitle">Welcome back, <%= admin.name || 'Admin' %>! Here's what's happening in your school.</div>
+            </div>
+
+            <!-- Dashboard Content Container -->
+            <div id="dashboardSection">
+                <!-- STAT CARDS -->
+                <div class="stat-grid">
+                    <!-- Total Students -->
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper" style="background: #eff6ff; color: #3b82f6;">
+                            👨‍🎓
+                        </div>
+                        <div>
+                            <div class="stat-label">Total Students</div>
+                            <div class="stat-value"><%= stats.totalStudents > 0 ? stats.totalStudents.toLocaleString() : '1,248' %></div>
+                            <div class="stat-change up">↑ 5.4% from last year</div>
+                        </div>
+                    </div>
+
+                    <!-- Total Teachers -->
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper" style="background: #ecfdf5; color: #10b981;">
+                            👨‍🏫
+                        </div>
+                        <div>
+                            <div class="stat-label">Total Teachers</div>
+                            <div class="stat-value"><%= stats.totalTeachers > 0 ? stats.totalTeachers.toLocaleString() : '86' %></div>
+                            <div class="stat-change up">↑ 8 new this year</div>
+                        </div>
+                    </div>
+
+                    <!-- Total Subjects -->
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper" style="background: #fffbeb; color: #f59e0b;">
+                            📚
+                        </div>
+                        <div>
+                            <div class="stat-label">Total Subjects</div>
+                            <div class="stat-value"><%= stats.totalCourses > 0 ? stats.totalCourses.toLocaleString() : '42' %></div>
+                            <div class="stat-change up">↑ 4 new subjects</div>
+                        </div>
+                    </div>
+
+                    <!-- Departments -->
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper" style="background: #f5f3ff; color: #8b5cf6;">
+                            🏢
+                        </div>
+                        <div>
+                            <div class="stat-label">Departments</div>
+                            <div class="stat-value">8</div>
+                            <div class="stat-change neutral">— No change</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QUICK ACTIONS -->
+                <div class="quick-actions-box">
+                    <div class="quick-actions-title">Quick Actions</div>
+                    <div class="quick-actions-grid">
+                        <button class="quick-action-btn" onclick="alert('Quick Action: Add Student')">
+                            <div class="quick-action-icon" style="background: #eff6ff; color: #3b82f6;">👨‍🎓</div>
+                            <span class="quick-action-text">Add Student</span>
+                        </button>
+                        <button class="quick-action-btn" onclick="alert('Quick Action: Add Teacher')">
+                            <div class="quick-action-icon" style="background: #ecfdf5; color: #10b981;">👨‍🏫</div>
+                            <span class="quick-action-text">Add Teacher</span>
+                        </button>
+                        <button class="quick-action-btn" onclick="alert('Quick Action: Add Subject')">
+                            <div class="quick-action-icon" style="background: #fffbeb; color: #f59e0b;">📚</div>
+                            <span class="quick-action-text">Add Subject</span>
+                        </button>
+                        <button class="quick-action-btn" onclick="alert('Quick Action: Add Department')">
+                            <div class="quick-action-icon" style="background: #f5f3ff; color: #8b5cf6;">🏢</div>
+                            <span class="quick-action-text">Add Department</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CHARTS & NOTICES -->
+                <div class="charts-notices-grid">
+                    <!-- Bar Chart -->
+                    <div class="panel-card">
+                        <div class="panel-title">Students &amp; Teachers Overview</div>
+                        <div style="height: 210px; position: relative;">
+                            <canvas id="barChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Attendance Donut Chart -->
+                    <div class="panel-card">
+                        <div class="panel-title">Attendance Summary</div>
+                        <div style="display: flex; align-items: center; gap: 10px; height: 210px;">
+                            <div style="position: relative; width: 140px; height: 140px;">
+                                <canvas id="attendanceChart"></canvas>
+                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
+                                    <div style="font-size: 18px; font-weight: 700; color: #1e293b;">84%</div>
+                                    <div style="font-size: 9px; color: #94a3b8;">Attendance</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 10px; height: 10px; border-radius: 50%; background: #10b981;"></div>
+                                    <div>
+                                        <div style="font-size: 12px; font-weight: 600; color: #334155;">Present</div>
+                                        <div style="font-size: 11px; color: #94a3b8;">84% (1050)</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b;"></div>
+                                    <div>
+                                        <div style="font-size: 12px; font-weight: 600; color: #334155;">Late</div>
+                                        <div style="font-size: 11px; color: #94a3b8;">8% (100)</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 10px; height: 10px; border-radius: 50%; background: #ef4444;"></div>
+                                    <div>
+                                        <div style="font-size: 12px; font-weight: 600; color: #334155;">Absent</div>
+                                        <div style="font-size: 11px; color: #94a3b8;">8% (98)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Important Notices -->
+                    <div class="panel-card">
+                        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 14px;">
+                            <span style="font-size: 16px;">📢</span>
+                            <span class="panel-title" style="margin-bottom: 0;">Important Notices</span>
+                        </div>
+                        <div class="notice-item">
+                            <div class="notice-title">Enrollment Deadline</div>
+                            <div class="notice-desc">Student enrollment for the new semester is ending soon.</div>
+                            <div class="notice-date">20 Aug 2026</div>
+                        </div>
+                        <div class="notice-item">
+                            <div class="notice-title">Teacher Meeting</div>
+                            <div class="notice-desc">Monthly teacher meeting will be held this week.</div>
+                            <div class="notice-date">22 Aug 2026</div>
+                        </div>
+                        <div class="notice-item">
+                            <div class="notice-title">Attendance Report</div>
+                            <div class="notice-desc">Monthly attendance reports are now available.</div>
+                            <div class="notice-date">25 Aug 2026</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Generic Section Placeholder for other tabs -->
+            <div id="otherSection" style="display: none;">
+                <div class="panel-card" style="padding: 2rem; text-align: center;">
+                    <h3 id="otherSectionTitle" style="color: #1e293b; margin-bottom: 0.5rem;">Section</h3>
+                    <p style="color: #64748b; font-size: 14px;">This section is managed inside the Admin Control Panel.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Toggle Sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+
+        // Switch Navigation
+        function switchNav(navLabel, element) {
+            document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+            if (element) element.classList.add('active');
+
+            document.getElementById('currentNavTitle').innerText = navLabel;
+
+            const dashboardSec = document.getElementById('dashboardSection');
+            const otherSec = document.getElementById('otherSection');
+
+            if (navLabel === 'Dashboard') {
+                dashboardSec.style.display = 'block';
+                otherSec.style.display = 'none';
+            } else {
+                dashboardSec.style.display = 'none';
+                otherSec.style.display = 'block';
+                document.getElementById('otherSectionTitle').innerText = navLabel;
+            }
+        }
+
+        // Initialize Bar Chart
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [
+                    {
+                        label: 'Students',
+                        data: [1050, 1100, 1140, 1180, 1248],
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Teachers',
+                        data: [70, 74, 77, 81, 86],
+                        backgroundColor: '#10b981',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { boxWidth: 10, font: { size: 11 } }
+                    },
+                    tooltip: {
+                        padding: 10,
+                        cornerRadius: 8
+                    }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#94a3b8' } },
+                    y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 11 }, color: '#94a3b8' } }
+                }
+            }
+        });
+
+        // Initialize Attendance Donut Chart
+        const attCtx = document.getElementById('attendanceChart').getContext('2d');
+        new Chart(attCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Present', 'Late', 'Absent'],
+                datasets: [{
+                    data: [1050, 100, 98],
+                    backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                    cutout: '72%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.raw;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
- 
