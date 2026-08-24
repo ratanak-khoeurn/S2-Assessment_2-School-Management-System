@@ -1,0 +1,875 @@
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .app {
+        display: flex;
+        min-height: 100vh;
+        background: #f3f4f9;
+    }
+
+    .container {
+        flex: 1;
+        padding: 32px 40px;
+    }
+
+    .header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 24px;
+    }
+
+    .title {
+        font-size: 26px;
+        font-weight: 800;
+        margin: 0 0 4px;
+        color: #1f2430;
+    }
+
+    .subtitle {
+        margin: 0;
+        color: #7c8296;
+        font-size: 14.5px;
+    }
+
+    .btn {
+        border: none;
+        border-radius: 10px;
+        padding: 11px 18px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: #5b5fef;
+        color: #fff;
+    }
+
+    .btn-primary:hover {
+        background: #4b4fd6;
+    }
+
+    .btn-secondary {
+        background: #eceef3;
+        color: #333;
+    }
+
+    .btn-secondary:hover {
+        background: #dfe1e8;
+    }
+
+    .alert {
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 16px;
+        font-size: 14px;
+    }
+
+    .alert-error {
+        background: #fdeceb;
+        color: #d0492f;
+        border: 1px solid #f6cfc9;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    .controls {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .search-box {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #fff;
+        border: 1px solid #e6e8f0;
+        border-radius: 10px;
+        padding: 11px 16px;
+        max-width: 420px;
+    }
+
+    .search-box input {
+        border: none;
+        outline: none;
+        width: 100%;
+        font-size: 14.5px;
+        background: transparent;
+    }
+
+    .view-switch {
+        display: flex;
+        border: 1px solid #e6e8f0;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .view-switch button {
+        border: none;
+        background: transparent;
+        padding: 10px 16px;
+        font-size: 14px;
+        cursor: pointer;
+        color: #555;
+    }
+
+    .view-switch button.active {
+        background: #5b5fef;
+        color: #fff;
+    }
+
+    .teacher-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 18px;
+    }
+
+    .teacher-card {
+        background: #fff;
+        border: 1px solid #e6e8f0;
+        border-radius: 14px;
+        padding: 18px;
+    }
+
+    .teacher-card-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: #e7e8fb;
+        color: #5b5fef;
+        font-weight: 700;
+        font-size: 13.5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .teacher-card-name {
+        font-weight: 700;
+    }
+
+    .teacher-card-code {
+        color: #7c8296;
+        font-size: 12.5px;
+    }
+
+    .teacher-card-row {
+        font-size: 13.5px;
+        color: #444;
+        margin: 4px 0;
+    }
+
+    .teacher-card-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 14px;
+    }
+
+    .table-container {
+        background: #fff;
+        border: 1px solid #e6e8f0;
+        border-radius: 14px;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1000px;
+    }
+
+    thead tr {
+        background: #f7f8fb;
+        border-bottom: 1px solid #e6e8f0;
+    }
+
+    th {
+        text-align: left;
+        padding: 14px 18px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #3b3f4c;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 14px 18px;
+        font-size: 13.5px;
+        border-bottom: 1px solid #eef0f5;
+        white-space: nowrap;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    tbody tr:hover {
+        background: #fafbfd;
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 11px;
+        border-radius: 999px;
+        font-size: 12.5px;
+        font-weight: 600;
+    }
+
+    .badge.active {
+        background: #e7f6ec;
+        color: #2f9e5c;
+    }
+
+    .badge.inactive {
+        background: #fdeceb;
+        color: #d0492f;
+    }
+
+    .badge::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+    .action-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .action-btn.view {
+        background: #eaf0fe;
+        color: #4c6ef5;
+    }
+
+    .action-btn.edit {
+        background: #fdf1e0;
+        color: #d99a3b;
+    }
+
+    .action-btn.delete {
+        background: #f3f0fc;
+        color: #8b7fc7;
+    }
+
+    .empty {
+        text-align: center;
+        padding: 60px 20px;
+        color: #7c8296;
+    }
+
+    .empty-icon {
+        font-size: 34px;
+        margin-bottom: 10px;
+    }
+
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(20, 22, 30, 0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+    }
+
+    .modal {
+        background: #fff;
+        border-radius: 16px;
+        width: 520px;
+        max-width: 92vw;
+        max-height: 88vh;
+        overflow-y: auto;
+        padding: 24px 26px;
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+    }
+
+    .modal-header h2 {
+        margin: 0;
+        font-size: 19px;
+    }
+
+    .close-btn {
+        border: none;
+        background: transparent;
+        font-size: 16px;
+        cursor: pointer;
+        color: #7c8296;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 14px;
+    }
+
+    .form-row .form-group {
+        flex: 1;
+    }
+
+    .form-group {
+        margin-bottom: 14px;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #333;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #e0e2ea;
+        border-radius: 9px;
+        font-size: 14px;
+        outline: none;
+    }
+
+    .form-control:focus {
+        border-color: #5b5fef;
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 8px;
+    }
+
+    .view-body div {
+        padding: 8px 0;
+        font-size: 14px;
+        border-bottom: 1px solid #f1f2f6;
+    }
+
+    .view-body strong {
+        display: inline-block;
+        width: 130px;
+        color: #555;
+    }
+
+    @media (max-width: 720px) {
+        .form-row {
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .container {
+            padding: 20px 16px;
+        }
+    }
+</style>
+
+<body>
+    <div class="app">
+
+        <%- include('../components/sidebar') %>
+
+            <main class="container">
+
+                <!-- HEADER -->
+                <header class="header">
+                    <div>
+                        <h1 class="title">Teachers</h1>
+                        <p class="subtitle">
+                            Manage teachers information
+                        </p>
+                    </div>
+
+                    <button type="button" class="btn btn-primary" onclick="openAddModal()">
+                        ＋ Add Teacher
+                    </button>
+                </header>
+
+                <!-- ERROR -->
+                <div id="errorMessage" class="alert alert-error hidden"></div>
+
+                <!-- CONTROLS -->
+                <section class="controls">
+
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+
+                        <input type="search" id="searchInput" placeholder="Search teacher or code..."
+                            oninput="searchTeacher()">
+                    </div>
+
+                    <div class="view-switch">
+
+                        <button type="button" id="gridButton" class="active" onclick="changeView('grid')">
+                            ▦ Grid
+                        </button>
+
+                        <button type="button" id="tableButton" onclick="changeView('table')">
+                            ☰ List
+                        </button>
+
+                    </div>
+
+                </section>
+
+                <!-- GRID -->
+                <section id="gridView" class="teacher-grid"></section>
+
+                <!-- TABLE -->
+                <section id="tableView" class="table-container hidden">
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Teacher ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Gender</th>
+                                <th>Department</th>
+                                <th>Position</th>
+                                <th>Qualification</th>
+                                <th>Joined Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="teacherTableBody"></tbody>
+
+                    </table>
+
+                </section>
+
+                <!-- EMPTY -->
+                <div id="emptyMessage" class="empty hidden">
+
+                    <div class="empty-icon">🏢</div>
+
+                    <h2>No teacher found</h2>
+
+                    <p>
+                        Try another search or create a new teacher.
+                    </p>
+
+                </div>
+            </main>
+    </div>
+
+    <!-- ADD / EDIT MODAL -->
+    <div id="formModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+
+                <h2 id="formModalTitle">
+                    Add New Teacher
+                </h2>
+
+                <button class="close-btn" onclick="closeFormModal()">
+                    ✕
+                </button>
+
+            </div>
+
+            <form id="teacherForm" onsubmit="saveTeacher(event)">
+
+                <input type="hidden" id="teacherId">
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label class="form-label">Teacher Code *</label>
+                        <input type="text" id="teacherCode" class="form-control" placeholder="e.g. TCH-006" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" id="teacherName" class="form-control" placeholder="e.g. Sok Dara" required>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label class="form-label">Email *</label>
+                        <input type="email" id="teacherEmail" class="form-control" placeholder="name@example.com"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Phone *</label>
+                        <input type="tel" id="teacherPhone" class="form-control" placeholder="012 345 678" required>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label class="form-label">Gender</label>
+                        <select id="teacherGender" class="form-control">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Department *</label>
+                        <select id="teacherDepartment" class="form-control" required>
+                            <option value="">Select department</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="English">English</option>
+                            <option value="Science">Science</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label class="form-label">Position</label>
+                        <select id="teacherPosition" class="form-control">
+                            <option value="Teacher">Teacher</option>
+                            <option value="Senior Teacher">Senior Teacher</option>
+                            <option value="Head of Department">Head of Department</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Qualification</label>
+                        <input type="text" id="teacherQualification" class="form-control"
+                            placeholder="e.g. M.Ed in Mathematics">
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label class="form-label">Joined Date</label>
+                        <input type="date" id="teacherJoined" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select id="teacherStatus" class="form-control">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" onclick="closeFormModal()">
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="btn btn-primary" id="submitButton">
+                        Create Teacher
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- VIEW MODAL -->
+    <div id="viewModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Teacher Details</h2>
+                <button class="close-btn" onclick="closeViewModal()">✕</button>
+            </div>
+            <div id="viewModalBody" class="view-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeViewModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Base styling for the classes used above. Remove this block if your app
+         already defines .btn / .modal-overlay / .table-container etc. in a
+         shared stylesheet, and keep only the .teacher-grid / .badge / .view-switch
+         rules that are specific to this page. -->
+
+
+    <script>
+        // ---- Sample data store (swap for a fetch('/api/teachers') call when a backend exists) ----
+        let teachers = [
+            { id: 1, code: 'TCH-001', name: 'Sok Dara', email: 'sok.dara@example.com', phone: '012 345 678', gender: 'Male', department: 'Computer Science', position: 'Senior Teacher', qualification: 'M.Sc in Computer Science', joined: '2023-01-15', status: 'active' },
+            { id: 2, code: 'TCH-002', name: 'Chanthy Sreypich', email: 'chanthy.sreypich@example.com', phone: '097 234 567', gender: 'Female', department: 'Mathematics', position: 'Teacher', qualification: 'B.Ed in Mathematics', joined: '2023-03-20', status: 'active' },
+            { id: 3, code: 'TCH-003', name: 'Vannak Chea', email: 'vannak.chea@example.com', phone: '010 456 789', gender: 'Male', department: 'English', position: 'Teacher', qualification: 'B.A in English', joined: '2022-08-10', status: 'inactive' },
+        ];
+
+        let currentView = 'grid';
+        let nextId = teachers.length + 1;
+
+        // ---- Helpers ----
+        function escapeHtml(str) {
+            return String(str ?? '').replace(/[&<>"']/g, (c) => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
+        }
+
+        function initials(name) {
+            return name.split(' ').filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('');
+        }
+
+        function showError(message) {
+            const el = document.getElementById('errorMessage');
+            el.textContent = message;
+            el.classList.remove('hidden');
+            setTimeout(() => el.classList.add('hidden'), 4000);
+        }
+
+        // ---- View switching ----
+        function changeView(view) {
+            currentView = view;
+            document.getElementById('gridView').classList.toggle('hidden', view !== 'grid');
+            document.getElementById('tableView').classList.toggle('hidden', view !== 'table');
+            document.getElementById('gridButton').classList.toggle('active', view === 'grid');
+            document.getElementById('tableButton').classList.toggle('active', view === 'table');
+        }
+
+        // ---- Search ----
+        function searchTeacher() {
+            renderTeachers();
+        }
+
+        function getFilteredTeachers() {
+            const q = document.getElementById('searchInput').value.trim().toLowerCase();
+            if (!q) return teachers;
+            return teachers.filter(t =>
+                t.name.toLowerCase().includes(q) ||
+                t.code.toLowerCase().includes(q) ||
+                t.email.toLowerCase().includes(q) ||
+                t.department.toLowerCase().includes(q)
+            );
+        }
+
+        // ---- Rendering ----
+        function renderTeachers() {
+            const list = getFilteredTeachers();
+
+            document.getElementById('emptyMessage').classList.toggle('hidden', list.length !== 0);
+            document.getElementById('gridView').classList.toggle('hidden', list.length === 0 || currentView !== 'grid');
+            document.getElementById('tableView').classList.toggle('hidden', list.length === 0 || currentView !== 'table');
+
+            renderGrid(list);
+            renderTable(list);
+        }
+
+        function renderGrid(list) {
+            const grid = document.getElementById('gridView');
+            grid.innerHTML = list.map(t => `
+                <div class="teacher-card">
+                    <div class="teacher-card-top">
+                        <div class="avatar">${escapeHtml(initials(t.name))}</div>
+                        <div>
+                            <div class="teacher-card-name">${escapeHtml(t.name)}</div>
+                            <div class="teacher-card-code">${escapeHtml(t.code)}</div>
+                        </div>
+                    </div>
+                    <div class="teacher-card-row">📧 ${escapeHtml(t.email)}</div>
+                    <div class="teacher-card-row">📞 ${escapeHtml(t.phone)}</div>
+                    <div class="teacher-card-row">🏫 ${escapeHtml(t.department)} · ${escapeHtml(t.position)}</div>
+                    <div class="teacher-card-row">
+                        <span class="badge ${t.status === 'active' ? 'active' : 'inactive'}">
+                            ${t.status === 'active' ? 'Active' : 'Inactive'}
+                        </span>
+                    </div>
+                    <div class="teacher-card-actions">
+                        <button class="action-btn view" onclick="viewTeacher(${t.id})" title="View">👁</button>
+                        <button class="action-btn edit" onclick="editTeacher(${t.id})" title="Edit">✏️</button>
+                        <button class="action-btn delete" onclick="deleteTeacher(${t.id})" title="Delete">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderTable(list) {
+            const body = document.getElementById('teacherTableBody');
+            body.innerHTML = list.map(t => `
+                <tr>
+                    <td>${escapeHtml(t.code)}</td>
+                    <td>${escapeHtml(t.name)}</td>
+                    <td>${escapeHtml(t.email)}</td>
+                    <td>${escapeHtml(t.phone)}</td>
+                    <td>${escapeHtml(t.gender)}</td>
+                    <td>${escapeHtml(t.department)}</td>
+                    <td>${escapeHtml(t.position)}</td>
+                    <td>${escapeHtml(t.qualification)}</td>
+                    <td>${escapeHtml(t.joined)}</td>
+                    <td>
+                        <span class="badge ${t.status === 'active' ? 'active' : 'inactive'}">
+                            ${t.status === 'active' ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="action-btn view" onclick="viewTeacher(${t.id})" title="View">👁</button>
+                        <button class="action-btn edit" onclick="editTeacher(${t.id})" title="Edit">✏️</button>
+                        <button class="action-btn delete" onclick="deleteTeacher(${t.id})" title="Delete">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ---- Add / Edit modal ----
+        function openAddModal() {
+            document.getElementById('formModalTitle').textContent = 'Add New Teacher';
+            document.getElementById('submitButton').textContent = 'Create Teacher';
+
+            document.getElementById('teacherId').value = '';
+            document.getElementById('teacherCode').value = '';
+            document.getElementById('teacherName').value = '';
+            document.getElementById('teacherEmail').value = '';
+            document.getElementById('teacherPhone').value = '';
+            document.getElementById('teacherGender').value = 'Male';
+            document.getElementById('teacherDepartment').value = '';
+            document.getElementById('teacherPosition').value = 'Teacher';
+            document.getElementById('teacherQualification').value = '';
+            document.getElementById('teacherJoined').value = '';
+            document.getElementById('teacherStatus').value = 'active';
+
+            document.getElementById('formModal').classList.remove('hidden');
+        }
+
+        function editTeacher(id) {
+            const t = teachers.find(x => x.id === id);
+            if (!t) return;
+
+            document.getElementById('formModalTitle').textContent = 'Edit Teacher';
+            document.getElementById('submitButton').textContent = 'Save Changes';
+
+            document.getElementById('teacherId').value = t.id;
+            document.getElementById('teacherCode').value = t.code;
+            document.getElementById('teacherName').value = t.name;
+            document.getElementById('teacherEmail').value = t.email;
+            document.getElementById('teacherPhone').value = t.phone;
+            document.getElementById('teacherGender').value = t.gender;
+            document.getElementById('teacherDepartment').value = t.department;
+            document.getElementById('teacherPosition').value = t.position;
+            document.getElementById('teacherQualification').value = t.qualification;
+            document.getElementById('teacherJoined').value = t.joined;
+            document.getElementById('teacherStatus').value = t.status;
+
+            document.getElementById('formModal').classList.remove('hidden');
+        }
+
+        function closeFormModal() {
+            document.getElementById('formModal').classList.add('hidden');
+        }
+
+        function saveTeacher(event) {
+            event.preventDefault();
+
+            const id = document.getElementById('teacherId').value;
+            const data = {
+                code: document.getElementById('teacherCode').value.trim(),
+                name: document.getElementById('teacherName').value.trim(),
+                email: document.getElementById('teacherEmail').value.trim(),
+                phone: document.getElementById('teacherPhone').value.trim(),
+                gender: document.getElementById('teacherGender').value,
+                department: document.getElementById('teacherDepartment').value,
+                position: document.getElementById('teacherPosition').value,
+                qualification: document.getElementById('teacherQualification').value.trim(),
+                joined: document.getElementById('teacherJoined').value,
+                status: document.getElementById('teacherStatus').value,
+            };
+
+            if (!data.code || !data.name || !data.email || !data.phone || !data.department) {
+                showError('Please fill in all required fields.');
+                return;
+            }
+
+            if (id) {
+                const t = teachers.find(x => x.id === Number(id));
+                Object.assign(t, data);
+            } else {
+                teachers.push({ id: nextId++, ...data });
+            }
+
+            closeFormModal();
+            renderTeachers();
+        }
+
+        // ---- View modal ----
+        function viewTeacher(id) {
+            const t = teachers.find(x => x.id === id);
+            if (!t) return;
+
+            document.getElementById('viewModalBody').innerHTML = `
+                <div><strong>Teacher Code</strong> ${escapeHtml(t.code)}</div>
+                <div><strong>Name</strong> ${escapeHtml(t.name)}</div>
+                <div><strong>Email</strong> ${escapeHtml(t.email)}</div>
+                <div><strong>Phone</strong> ${escapeHtml(t.phone)}</div>
+                <div><strong>Gender</strong> ${escapeHtml(t.gender)}</div>
+                <div><strong>Department</strong> ${escapeHtml(t.department)}</div>
+                <div><strong>Position</strong> ${escapeHtml(t.position)}</div>
+                <div><strong>Qualification</strong> ${escapeHtml(t.qualification)}</div>
+                <div><strong>Joined Date</strong> ${escapeHtml(t.joined)}</div>
+                <div><strong>Status</strong> ${t.status === 'active' ? 'Active' : 'Inactive'}</div>
+            `;
+
+            document.getElementById('viewModal').classList.remove('hidden');
+        }
+
+        function closeViewModal() {
+            document.getElementById('viewModal').classList.add('hidden');
+        }
+
+        // ---- Delete ----
+        function deleteTeacher(id) {
+            const t = teachers.find(x => x.id === id);
+            if (!t) return;
+            if (!confirm(`Delete ${t.name}? This cannot be undone.`)) return;
+
+            teachers = teachers.filter(x => x.id !== id);
+            renderTeachers();
+        }
+
+        // ---- Init ----
+        document.addEventListener('DOMContentLoaded', () => {
+            changeView('grid');
+            renderTeachers();
+        });
+    </script>
+
+</body>

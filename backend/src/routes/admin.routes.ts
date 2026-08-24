@@ -64,9 +64,14 @@ router.use('/reports', reportRouter);
 router.get('/', (_req: Request, res: Response) => {
     res.redirect('/admin/dashboard');
 });
-router.get('/departments', (_req: Request, res: Response) => {
-    res.redirect('/admin/departments');
+
+router.get("/department", (req: Request, res: Response) => {
+  res.render("admin/department", { admin: req.admin });
 });
+router.get("/teacher", (req: Request, res: Response) => {
+  res.render("admin/teacher", { admin: req.admin });
+});
+
 
 
 export default router;

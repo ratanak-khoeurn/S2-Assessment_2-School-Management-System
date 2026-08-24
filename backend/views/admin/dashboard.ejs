@@ -28,90 +28,6 @@
             overflow: hidden;
         }
 
-        /* ================= SIDEBAR ================= */
-
-        .sidebar {
-            width: 240px;
-            background: #0f172a;
-            color: white;
-            transition: 0.3s;
-            flex-shrink: 0;
-        }
-
-        .sidebar.closed {
-            width: 70px;
-        }
-
-        .sidebar-header {
-            height: 65px;
-            display: flex;
-            align-items: center;
-            padding: 0 18px;
-            border-bottom: 1px solid #1e293b;
-        }
-
-        .logo {
-            width: 36px;
-            height: 36px;
-            background: #3b82f6;
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 700;
-        }
-
-        .school-name {
-            margin-left: 10px;
-            font-weight: 700;
-            font-size: 14px;
-            white-space: nowrap;
-        }
-
-        .sidebar.closed .school-name,
-        .sidebar.closed .nav-text {
-            display: none;
-        }
-
-        .nav {
-            padding: 15px 10px;
-        }
-
-        .nav-title {
-            color: #64748b;
-            font-size: 10px;
-            text-transform: uppercase;
-            padding: 10px;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 11px 12px;
-            margin-bottom: 4px;
-            border-radius: 7px;
-            color: #cbd5e1;
-            text-decoration: none;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        .nav-item:hover {
-            background: #1e293b;
-            color: white;
-        }
-
-        .nav-item.active {
-            background: #2563eb;
-            color: white;
-        }
-
-        .nav-icon {
-            width: 22px;
-            text-align: center;
-        }
-
         /* ================= MAIN ================= */
 
         .main {
@@ -391,11 +307,6 @@
         }
 
         @media (max-width: 700px) {
-            .sidebar {
-                position: fixed;
-                z-index: 1000;
-                height: 100vh;
-            }
 
             .stats {
                 grid-template-columns: 1fr;
@@ -417,78 +328,7 @@
     <div class="app">
 
         <!-- ================= SIDEBAR ================= -->
-
-        <aside class="sidebar" id="sidebar">
-
-            <div class="sidebar-header">
-                <div class="logo">
-                    SMS
-                </div>
-
-                <div class="school-name">
-                    School Management
-                </div>
-            </div>
-
-            <nav class="nav">
-
-                <div class="nav-title">
-                    Main Menu
-                </div>
-
-                <a href="/dashboard" class="nav-item active">
-                    <span class="nav-icon">📊</span>
-                    <span class="nav-text">Dashboard</span>
-                </a>
-
-                <a href="/departments" class="nav-item">
-                    <span class="nav-icon">🏢</span>
-                    <span class="nav-text">Departments</span>
-                </a>
-
-                <a href="/teachers" class="nav-item">
-                    <span class="nav-icon">👨‍🏫</span>
-                    <span class="nav-text">Teachers</span>
-                </a>
-
-                <a href="/students" class="nav-item">
-                    <span class="nav-icon">🎓</span>
-                    <span class="nav-text">Students</span>
-                </a>
-
-                <a href="/subjects" class="nav-item">
-                    <span class="nav-icon">📚</span>
-                    <span class="nav-text">Subjects</span>
-                </a>
-
-                <a href="/classes" class="nav-item">
-                    <span class="nav-icon">🏫</span>
-                    <span class="nav-text">Classes</span>
-                </a>
-
-                <a href="/attendance" class="nav-item">
-                    <span class="nav-icon">📅</span>
-                    <span class="nav-text">Attendance</span>
-                </a>
-
-                <div class="nav-title">
-                    Management
-                </div>
-
-                <a href="/admin/reports" class="nav-item">
-                    <span class="nav-icon">📈</span>
-                    <span class="nav-text">Reports</span>
-                </a>
-
-                <a href="/settings" class="nav-item">
-                    <span class="nav-icon">⚙️</span>
-                    <span class="nav-text">Settings</span>
-                </a>
-
-            </nav>
-
-        </aside>
-
+        <%- include('../components/sidebar') %>
 
         <!-- ================= MAIN ================= -->
 
@@ -673,7 +513,7 @@
 
                     <div class="quick-actions">
 
-                        <button class="quick-action" onclick="location.href='/departments'">
+                        <button class="quick-action" onclick="location.href='/api/departments'">
                             <div class="quick-icon">
                                 🏢
                             </div>
