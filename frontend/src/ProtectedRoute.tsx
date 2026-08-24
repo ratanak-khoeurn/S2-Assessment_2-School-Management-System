@@ -6,7 +6,7 @@ interface ProtectedRouteProps {
 
 export default function ProtectedRoute({allowedRoles}: ProtectedRouteProps) {
 
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("authToken");
     const userRole = localStorage.getItem("role");
     const isAuthenticated = !!token;
 

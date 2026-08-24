@@ -1,23 +1,74 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FormField, FormHeader, PasswordField, PrimaryButton, SocialButton, SocialDivider } from '../common/form';
 import { GoogleIcon } from './icons';
+import { registerUser } from '../../services/authService';
+
+const PASSWORD_MISMATCH_MESSAGE = 'Passwords do not match.';
+const REGISTRATION_FAILED_MESSAGE = 'Registration failed. Please try again.';
 
 export default function RegisterContainer() {
+    const navigate = useNavigate();
+
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        setError(null);
+
+        if (password !== confirmPassword) {
+            setError(PASSWORD_MISMATCH_MESSAGE);
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            const result = await registerUser({ firstName, lastName, email, password, confirmPassword });
+
+            if (result.success) {
+                navigate('/');
+            } else {
+                setError(result.message ?? REGISTRATION_FAILED_MESSAGE);
+            }
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     return (
         <div className="w-full max-w-xl px-1 sm:w-[90%] lg:w-[80%]">
             <FormHeader title="Create your account" subtitle="create your account to explore more about our school!" />
 
             <div className="w-full">
-                <form action="#" method="POST" className="space-y-5 sm:space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
                     <div className="flex w-full flex-col gap-5 sm:flex-row">
                         <div className="w-full">
-                            <FormField id="firstName" label="First Name" placeholder="First name" />
+                            <FormField
+                                id="firstName"
+                                label="First Name"
+                                placeholder="First name"
+                                value={firstName}
+                                onChange={(event) => setFirstName(event.target.value)}
+                            />
                         </div>
                         <div className="w-full">
-                            <FormField id="lastName" label="Last Name" placeholder="Last name" />
+                            <FormField
+                                id="lastName"
+                                label="Last Name"
+                                placeholder="Last name"
+                                value={lastName}
+                                onChange={(event) => setLastName(event.target.value)}
+                            />
                         </div>
                     </div>
 
@@ -27,15 +78,19 @@ export default function RegisterContainer() {
                         type="email"
                         placeholder="you@example.com"
                         autoComplete="email"
+                        value={email}
+                        onChange={(event) => setEmail(event.target.value)}
                     />
 
                     <PasswordField
                         id="password"
                         label="Password"
                         placeholder="Enter your password"
-                        autoComplete="current-password"
+                        autoComplete="new-password"
                         showPassword={showPassword}
                         onToggle={() => setShowPassword((value) => !value)}
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
                     />
 
                     <PasswordField
@@ -45,10 +100,20 @@ export default function RegisterContainer() {
                         autoComplete="new-password"
                         showPassword={showConfirmPassword}
                         onToggle={() => setShowConfirmPassword((value) => !value)}
+                        value={confirmPassword}
+                        onChange={(event) => setConfirmPassword(event.target.value)}
                     />
 
+                    {error && (
+                        <p role="alert" className="text-sm font-medium text-red-600">
+                            {error}
+                        </p>
+                    )}
+
                     <div className="pt-2">
-                        <PrimaryButton>Sign Up</PrimaryButton>
+                        <PrimaryButton disabled={isSubmitting}>
+                            {isSubmitting ? 'Signing up…' : 'Sign Up'}
+                        </PrimaryButton>
                     </div>
                 </form>
 

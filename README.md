@@ -75,6 +75,10 @@ Install dependencies:
 npm install
 ```
 
+```bash
+npm run seed
+```
+
 Make sure MySQL (e.g. XAMPP) is running and your `.env` contains your MySQL credentials:
 ```env
 PORT=3000

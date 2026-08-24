@@ -4,11 +4,10 @@ import ProtectedRoute from './ProtectedRoute';
 import LoginPage from './auth/login';
 import RegisterPage from './auth/register';
 import ForgotPassword from './auth/forgot-password';
-import DashboardPage from '../src/dashboard/Dashboard';
+import EduPortalDashboard from './pages/home/index';
 
 const AdminPanel = () => <h2>Admin Panel (Protected: Admins only)</h2>;
 const Unauthorized = () => <h2>403 - You cannot access this page</h2>;
-const HomePage = () => <h2>Welcome to home page</h2>;
 
 export default function App() {
 
@@ -23,8 +22,8 @@ export default function App() {
 
         {/* PROTECTED ROUTES: Authenticated Users */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/" element={<EduPortalDashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Route>
 
         {/* PROTECTED ROUTES: Admin Only */}
