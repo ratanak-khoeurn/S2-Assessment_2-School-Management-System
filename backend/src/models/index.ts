@@ -1,9 +1,10 @@
-import { sequelize } from "../config/database.js";
+﻿import { sequelize } from "../config/database.js";
 import { Role } from "./Role.js";
 import { User } from "./User.js";
 import { Course } from "./Course.js";
 import { Enrollment } from "./Enrollment.js";
 import { Material } from "./Material.js";
+import { Department } from "./Department/Department.js";
 
 // Role & User
 Role.hasMany(User, { foreignKey: "roleId" });
@@ -38,4 +39,5 @@ Enrollment.belongsTo(Course, { foreignKey: "courseId", as: "Course" });
 Course.hasMany(Material, { foreignKey: "courseId", as: "Materials" });
 Material.belongsTo(Course, { foreignKey: "courseId", as: "Course" });
 
-export { sequelize, Role, User, Course, Enrollment, Material };
+export { sequelize, Role, User, Course, Enrollment, Material, Department };
+

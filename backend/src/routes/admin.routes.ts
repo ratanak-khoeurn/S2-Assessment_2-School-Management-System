@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { User, Role } from '../models/index.js';
 import { ADMIN_COOKIE_NAME, requireAdmin, redirectIfAdmin } from '../middleware/adminAuth.js';
+import { reportRouter } from './report.js';
 
 const router = Router();
 
@@ -55,8 +56,10 @@ router.post('/logout', (_req: Request, res: Response) => {
 });
 
 router.get('/dashboard', (req: Request, res: Response) => {
-    res.render('admin/dashboard', { admin: req.admin });
+    res.render('admin/dashboard', { admin: req.admin, activeNav: 'Dashboard' });
 });
+
+router.use('/reports', reportRouter);
 
 router.get('/', (_req: Request, res: Response) => {
     res.redirect('/admin/dashboard');
@@ -67,3 +70,4 @@ router.get('/departments', (_req: Request, res: Response) => {
 
 
 export default router;
+
