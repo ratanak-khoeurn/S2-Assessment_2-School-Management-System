@@ -5,7 +5,6 @@ import cookieParser from "cookie-parser";
 import { apiRouter } from "./routes/api.routes.js";
 import authRoutes from "./routes/auth.js"
 import adminRoutes from "./routes/admin.routes.js"
-import { departmentRouter } from "./routes/department.js";
 
 export const createApp = (): Express => {
   const app = express();
@@ -33,9 +32,6 @@ export const createApp = (): Express => {
       documentation: "/api/health",
     });
   });
-
-  // Department Routes
-  app.use("/departments", departmentRouter);
 
   // API Routes
   app.use("/api", apiRouter);

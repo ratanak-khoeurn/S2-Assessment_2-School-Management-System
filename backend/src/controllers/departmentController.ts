@@ -1,23 +1,46 @@
 import { Request, Response } from "express";
 import { Department } from "../models/Department/Department.js";
 
+// =====================================================
+// GET ALL DEPARTMENTS
+// GET /api/departments
+// =====================================================
 export const getDepartments = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
-  res.redirect("/admin/departments");
+  try {
+    const departments = await Department.findAll({
+      order: [["id", "DESC"]],
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Departments retrieved successfully",
+      data: departments,
+    });
+  } catch (error) {
+    console.error("Get departments error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve departments",
+    });
+  }
 };
 
+// =====================================================
+// GET DEPARTMENT BY ID
+// GET /api/departments/:id
+// =====================================================
 export const getDepartmentById = async (
   req: Request<{ id: string }>,
   res: Response,
 ): Promise<void> => {
   try {
-    const { id } = req.params;
+    const departmentId = Number(req.params.id);
 
-    const departmentId = Number(id);
-
-    if (isNaN(departmentId)) {
+    if (!Number.isInteger(departmentId) || departmentId <= 0) {
       res.status(400).json({
         success: false,
         message: "Invalid department ID",
@@ -50,6 +73,10 @@ export const getDepartmentById = async (
   }
 };
 
+// =====================================================
+// CREATE DEPARTMENT
+// POST /api/departments
+// =====================================================
 export const createDepartment = async (
   req: Request,
   res: Response,
@@ -57,18 +84,34 @@ export const createDepartment = async (
   try {
     const { departmentCode, departmentName, description, status } = req.body;
 
-    if (!departmentCode || !departmentName) {
+    // Validate required fields
+    if (typeof departmentCode !== "string" || !departmentCode.trim()) {
       res.status(400).json({
         success: false,
-        message: "Department code and department name are required",
+        message: "Department code is required",
       });
       return;
     }
 
+    if (typeof departmentName !== "string" || !departmentName.trim()) {
+      res.status(400).json({
+        success: false,
+        message: "Department name is required",
+      });
+      return;
+    }
+
+    const cleanCode = departmentCode.trim();
+    const cleanName = departmentName.trim();
+    const cleanDescription =
+      typeof description === "string" ? description.trim() || null : null;
+
+    const cleanStatus = status === "inactive" ? "inactive" : "active";
+
     // Check duplicate department code
     const existingDepartment = await Department.findOne({
       where: {
-        departmentCode: departmentCode.trim(),
+        departmentCode: cleanCode,
       },
     });
 
@@ -80,11 +123,12 @@ export const createDepartment = async (
       return;
     }
 
+    // Create department
     const department = await Department.create({
-      departmentCode: departmentCode.trim(),
-      departmentName: departmentName.trim(),
-      description: description?.trim() || null,
-      status: status || "active",
+      departmentCode: cleanCode,
+      departmentName: cleanName,
+      description: cleanDescription,
+      status: cleanStatus,
     });
 
     res.status(201).json({
@@ -102,25 +146,24 @@ export const createDepartment = async (
   }
 };
 
-
+// =====================================================
+// UPDATE DEPARTMENT
+// PUT /api/departments/:id
+// =====================================================
 export const updateDepartment = async (
   req: Request<{ id: string }>,
   res: Response,
 ): Promise<void> => {
   try {
-    const { id } = req.params;
+    const departmentId = Number(req.params.id);
 
-    const departmentId = Number(id);
-
-    if (isNaN(departmentId)) {
+    if (!Number.isInteger(departmentId) || departmentId <= 0) {
       res.status(400).json({
         success: false,
         message: "Invalid department ID",
       });
       return;
     }
-
-    const { departmentCode, departmentName, description, status } = req.body;
 
     const department = await Department.findByPk(departmentId);
 
@@ -132,15 +175,64 @@ export const updateDepartment = async (
       return;
     }
 
-    // Check duplicate department code
-    if (departmentCode && departmentCode.trim() !== department.departmentCode) {
+    const { departmentCode, departmentName, description, status } = req.body;
+
+    // -----------------------------------------
+    // Clean values
+    // -----------------------------------------
+
+    const cleanCode =
+      typeof departmentCode === "string"
+        ? departmentCode.trim()
+        : department.departmentCode;
+
+    const cleanName =
+      typeof departmentName === "string"
+        ? departmentName.trim()
+        : department.departmentName;
+
+    const cleanDescription =
+      description !== undefined
+        ? typeof description === "string"
+          ? description.trim() || null
+          : null
+        : department.description;
+
+    const cleanStatus =
+      status === "active" || status === "inactive" ? status : department.status;
+
+    // -----------------------------------------
+    // Validate
+    // -----------------------------------------
+
+    if (!cleanCode) {
+      res.status(400).json({
+        success: false,
+        message: "Department code is required",
+      });
+      return;
+    }
+
+    if (!cleanName) {
+      res.status(400).json({
+        success: false,
+        message: "Department name is required",
+      });
+      return;
+    }
+
+    // -----------------------------------------
+    // Check duplicate code
+    // -----------------------------------------
+
+    if (cleanCode !== department.departmentCode) {
       const existingDepartment = await Department.findOne({
         where: {
-          departmentCode: departmentCode.trim(),
+          departmentCode: cleanCode,
         },
       });
 
-      if (existingDepartment) {
+      if (existingDepartment && existingDepartment.id !== department.id) {
         res.status(409).json({
           success: false,
           message: "Department code already exists",
@@ -149,17 +241,15 @@ export const updateDepartment = async (
       }
     }
 
+    // -----------------------------------------
+    // Update
+    // -----------------------------------------
+
     await department.update({
-      departmentCode: departmentCode?.trim() ?? department.departmentCode,
-
-      departmentName: departmentName?.trim() ?? department.departmentName,
-
-      description:
-        description !== undefined
-          ? description?.trim() || null
-          : department.description,
-
-      status: status ?? department.status,
+      departmentCode: cleanCode,
+      departmentName: cleanName,
+      description: cleanDescription,
+      status: cleanStatus,
     });
 
     res.status(200).json({
@@ -177,17 +267,18 @@ export const updateDepartment = async (
   }
 };
 
-
+// =====================================================
+// DELETE DEPARTMENT
+// DELETE /api/departments/:id
+// =====================================================
 export const deleteDepartment = async (
   req: Request<{ id: string }>,
   res: Response,
 ): Promise<void> => {
   try {
-    const { id } = req.params;
+    const departmentId = Number(req.params.id);
 
-    const departmentId = Number(id);
-
-    if (isNaN(departmentId)) {
+    if (!Number.isInteger(departmentId) || departmentId <= 0) {
       res.status(400).json({
         success: false,
         message: "Invalid department ID",
