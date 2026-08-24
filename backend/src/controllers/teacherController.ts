@@ -1,40 +1,6 @@
 import { Request, Response } from "express";
-import { Teacher } from "../models/Teachers/Teacher.js";
-import { Department } from "../models/Department/Department.js";
 
-// =====================================================
-// GET TEACHER MANAGEMENT PAGE
-// GET /admin/teacher
-// =====================================================
-
-export const getTeachersPage = async (
-  _req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    const teachers = await Teacher.findAll({
-      order: [["createdAt", "DESC"]],
-    });
-
-    const departments = await Department.findAll({
-      where: {
-        status: "active",
-      },
-      order: [["departmentName", "ASC"]],
-    });
-
-    res.render("teacher", {
-      teachers,
-      departments,
-    });
-  } catch (error) {
-    console.error("Error loading teacher page:", error);
-
-    res.status(500).render("error", {
-      message: "Unable to load teacher management page.",
-    });
-  }
-};
+import { Teacher, Department } from "../models/index.js";
 
 // =====================================================
 // GET ALL TEACHERS
@@ -42,7 +8,7 @@ export const getTeachersPage = async (
 // =====================================================
 
 export const getTeachers = async (
-  _req: Request,
+  req: Request,
   res: Response,
 ): Promise<void> => {
   try {
@@ -50,20 +16,22 @@ export const getTeachers = async (
       include: [
         {
           model: Department,
+
           as: "department",
+
           attributes: ["id", "departmentCode", "departmentName"],
         },
       ],
-      order: [["createdAt", "DESC"]],
+
+      order: [["id", "DESC"]],
     });
 
     res.status(200).json({
       success: true,
-      message: "Teachers retrieved successfully.",
       data: teachers,
     });
   } catch (error) {
-    console.error("Error fetching teachers:", error);
+    console.error("Get teachers error:", error);
 
     res.status(500).json({
       success: false,
@@ -78,25 +46,28 @@ export const getTeachers = async (
 // =====================================================
 
 export const getTeacherById = async (
-  req: Request<{ id: string }>,
+  req: Request,
   res: Response,
 ): Promise<void> => {
   try {
-    const teacherId = Number(req.params.id);
+    const id = Number(req.params.id);
 
-    if (!Number.isInteger(teacherId) || teacherId <= 0) {
+    if (!Number.isInteger(id)) {
       res.status(400).json({
         success: false,
         message: "Invalid teacher ID.",
       });
+
       return;
     }
 
-    const teacher = await Teacher.findByPk(teacherId, {
+    const teacher = await Teacher.findByPk(id, {
       include: [
         {
           model: Department,
+
           as: "department",
+
           attributes: ["id", "departmentCode", "departmentName"],
         },
       ],
@@ -107,16 +78,16 @@ export const getTeacherById = async (
         success: false,
         message: "Teacher not found.",
       });
+
       return;
     }
 
     res.status(200).json({
       success: true,
-      message: "Teacher retrieved successfully.",
       data: teacher,
     });
   } catch (error) {
-    console.error("Error fetching teacher:", error);
+    console.error("Get teacher error:", error);
 
     res.status(500).json({
       success: false,
@@ -148,110 +119,41 @@ export const createTeacher = async (
       status,
     } = req.body;
 
-    // -----------------------------------------
-    // Validate required fields
-    // -----------------------------------------
+    // ---------------------------------------------
+    // VALIDATION
+    // ---------------------------------------------
 
-    if (typeof teacherId !== "string" || !teacherId.trim()) {
+    if (!teacherId || !name || !email || !phone || !departmentId) {
       res.status(400).json({
         success: false,
-        message: "Teacher ID is required.",
+        message: "Please fill in all required fields.",
       });
+
       return;
     }
 
-    if (typeof name !== "string" || !name.trim()) {
-      res.status(400).json({
-        success: false,
-        message: "Teacher name is required.",
-      });
-      return;
-    }
+    // ---------------------------------------------
+    // CHECK DEPARTMENT
+    // ---------------------------------------------
 
-    if (typeof email !== "string" || !email.trim()) {
-      res.status(400).json({
-        success: false,
-        message: "Teacher email is required.",
-      });
-      return;
-    }
-
-    if (
-      departmentId === undefined ||
-      departmentId === null ||
-      departmentId === ""
-    ) {
-      res.status(400).json({
-        success: false,
-        message: "Department is required.",
-      });
-      return;
-    }
-
-    if (typeof position !== "string" || !position.trim()) {
-      res.status(400).json({
-        success: false,
-        message: "Teacher position is required.",
-      });
-      return;
-    }
-
-    // -----------------------------------------
-    // Convert department ID
-    // -----------------------------------------
-
-    const cleanDepartmentId = Number(departmentId);
-
-    if (!Number.isInteger(cleanDepartmentId) || cleanDepartmentId <= 0) {
-      res.status(400).json({
-        success: false,
-        message: "Invalid department ID.",
-      });
-      return;
-    }
-
-    // -----------------------------------------
-    // Clean data
-    // -----------------------------------------
-
-    const cleanTeacherId = teacherId.trim();
-    const cleanName = name.trim();
-    const cleanEmail = email.trim().toLowerCase();
-    const cleanPosition = position.trim();
-
-    const cleanPhone = typeof phone === "string" ? phone.trim() || null : null;
-
-    const cleanGender =
-      typeof gender === "string" ? gender.trim() || null : null;
-
-    const cleanQualification =
-      typeof qualification === "string" ? qualification.trim() || null : null;
-
-    const cleanJoinedDate = joinedDate || null;
-
-    const cleanStatus = status === "inactive" ? "inactive" : "active";
-
-    // -----------------------------------------
-    // Check department
-    // -----------------------------------------
-
-    const department = await Department.findByPk(cleanDepartmentId);
+    const department = await Department.findByPk(Number(departmentId));
 
     if (!department) {
-      res.status(404).json({
+      res.status(400).json({
         success: false,
         message: "Department not found.",
       });
+
       return;
     }
 
-    // -----------------------------------------
-    // Check duplicate teacher ID
-    // -----------------------------------------
+    // ---------------------------------------------
+    // CHECK DUPLICATE TEACHER ID
+    // ---------------------------------------------
 
     const existingTeacher = await Teacher.findOne({
       where: {
-        teacherId: cleanTeacherId,
+        teacherId,
       },
     });
 
@@ -260,51 +162,61 @@ export const createTeacher = async (
         success: false,
         message: "Teacher ID already exists.",
       });
+
       return;
     }
 
-    // -----------------------------------------
-    // Check duplicate email
-    // -----------------------------------------
-
-    const existingEmail = await Teacher.findOne({
-      where: {
-        email: cleanEmail,
-      },
-    });
-
-    if (existingEmail) {
-      res.status(409).json({
-        success: false,
-        message: "Teacher email already exists.",
-      });
-      return;
-    }
-
-    // -----------------------------------------
-    // Create teacher
-    // -----------------------------------------
+    // ---------------------------------------------
+    // CREATE
+    // ---------------------------------------------
 
     const teacher = await Teacher.create({
-      teacherId: cleanTeacherId,
-      name: cleanName,
-      email: cleanEmail,
-      phone: cleanPhone,
-    //   gender: cleanGender,
-      departmentId: cleanDepartmentId,
-      position: cleanPosition,
-      qualification: cleanQualification,
-      joinedDate: cleanJoinedDate,
-      status: cleanStatus,
+      teacherId,
+
+      name,
+
+      email,
+
+      phone,
+
+      gender: gender || "Male",
+
+      departmentId: Number(departmentId),
+
+      position: position || "Teacher",
+
+      qualification: qualification || null,
+
+      joinedDate: joinedDate || null,
+
+      status: status || "active",
+    });
+
+    // ---------------------------------------------
+    // GET CREATED TEACHER
+    // ---------------------------------------------
+
+    const createdTeacher = await Teacher.findByPk(teacher.id, {
+      include: [
+        {
+          model: Department,
+
+          as: "department",
+
+          attributes: ["id", "departmentCode", "departmentName"],
+        },
+      ],
     });
 
     res.status(201).json({
       success: true,
+
       message: "Teacher created successfully.",
-      data: teacher,
+
+      data: createdTeacher,
     });
   } catch (error) {
-    console.error("Error creating teacher:", error);
+    console.error("Create teacher error:", error);
 
     res.status(500).json({
       success: false,
@@ -319,17 +231,18 @@ export const createTeacher = async (
 // =====================================================
 
 export const updateTeacher = async (
-  req: Request<{ id: string }>,
+  req: Request,
   res: Response,
 ): Promise<void> => {
   try {
     const id = Number(req.params.id);
 
-    if (!Number.isInteger(id) || id <= 0) {
+    if (!Number.isInteger(id)) {
       res.status(400).json({
         success: false,
         message: "Invalid teacher ID.",
       });
+
       return;
     }
 
@@ -340,6 +253,7 @@ export const updateTeacher = async (
         success: false,
         message: "Teacher not found.",
       });
+
       return;
     }
 
@@ -356,220 +270,74 @@ export const updateTeacher = async (
       status,
     } = req.body;
 
-    // -----------------------------------------
-    // Clean Teacher ID
-    // -----------------------------------------
+    // ---------------------------------------------
+    // CHECK DEPARTMENT
+    // ---------------------------------------------
 
-    let cleanTeacherId = teacher.teacherId;
-
-    if (teacherId !== undefined) {
-      if (typeof teacherId !== "string" || !teacherId.trim()) {
-        res.status(400).json({
-          success: false,
-          message: "Teacher ID is required.",
-        });
-        return;
-      }
-
-      cleanTeacherId = teacherId.trim();
-    }
-
-    // -----------------------------------------
-    // Clean Name
-    // -----------------------------------------
-
-    let cleanName = teacher.name;
-
-    if (name !== undefined) {
-      if (typeof name !== "string" || !name.trim()) {
-        res.status(400).json({
-          success: false,
-          message: "Teacher name is required.",
-        });
-        return;
-      }
-
-      cleanName = name.trim();
-    }
-
-    // -----------------------------------------
-    // Clean Email
-    // -----------------------------------------
-
-    let cleanEmail = teacher.email;
-
-    if (email !== undefined) {
-      if (typeof email !== "string" || !email.trim()) {
-        res.status(400).json({
-          success: false,
-          message: "Teacher email is required.",
-        });
-        return;
-      }
-
-      cleanEmail = email.trim().toLowerCase();
-    }
-
-    // -----------------------------------------
-    // Department
-    // -----------------------------------------
-
-    let cleanDepartmentId = teacher.departmentId;
-
-    if (
-      departmentId !== undefined &&
-      departmentId !== null &&
-      departmentId !== ""
-    ) {
-      cleanDepartmentId = Number(departmentId);
-
-      if (!Number.isInteger(cleanDepartmentId) || cleanDepartmentId <= 0) {
-        res.status(400).json({
-          success: false,
-          message: "Invalid department ID.",
-        });
-        return;
-      }
-
-      const department = await Department.findByPk(cleanDepartmentId);
+    if (departmentId) {
+      const department = await Department.findByPk(Number(departmentId));
 
       if (!department) {
-        res.status(404).json({
+        res.status(400).json({
           success: false,
           message: "Department not found.",
         });
+
         return;
       }
     }
 
-    // -----------------------------------------
-    // Position
-    // -----------------------------------------
-
-    let cleanPosition = teacher.position;
-
-    if (position !== undefined) {
-      if (typeof position !== "string" || !position.trim()) {
-        res.status(400).json({
-          success: false,
-          message: "Teacher position is required.",
-        });
-        return;
-      }
-
-      cleanPosition = position.trim();
-    }
-
-    // -----------------------------------------
-    // Optional fields
-    // -----------------------------------------
-
-    const cleanPhone =
-      phone !== undefined
-        ? typeof phone === "string"
-          ? phone.trim() || null
-          : null
-        : teacher.phone;
-
-    const cleanGender =
-      gender !== undefined
-        ? typeof gender === "string"
-          ? gender.trim() || null
-          : null
-        : teacher.gender;
-
-    const cleanQualification =
-      qualification !== undefined
-        ? typeof qualification === "string"
-          ? qualification.trim() || null
-          : null
-        : teacher.qualification;
-
-    const cleanJoinedDate =
-      joinedDate !== undefined ? joinedDate || null : teacher.joinedDate;
-
-    // -----------------------------------------
-    // Status
-    // -----------------------------------------
-
-    let cleanStatus = teacher.status;
-
-    if (status !== undefined) {
-      if (status !== "active" && status !== "inactive") {
-        res.status(400).json({
-          success: false,
-          message: "Status must be active or inactive.",
-        });
-        return;
-      }
-
-      cleanStatus = status;
-    }
-
-    // -----------------------------------------
-    // Check duplicate Teacher ID
-    // -----------------------------------------
-
-    if (cleanTeacherId !== teacher.teacherId) {
-      const duplicateTeacher = await Teacher.findOne({
-        where: {
-          teacherId: cleanTeacherId,
-        },
-      });
-
-      if (duplicateTeacher && duplicateTeacher.id !== teacher.id) {
-        res.status(409).json({
-          success: false,
-          message: "Teacher ID already exists.",
-        });
-        return;
-      }
-    }
-
-    // -----------------------------------------
-    // Check duplicate email
-    // -----------------------------------------
-
-    if (cleanEmail !== teacher.email) {
-      const duplicateEmail = await Teacher.findOne({
-        where: {
-          email: cleanEmail,
-        },
-      });
-
-      if (duplicateEmail && duplicateEmail.id !== teacher.id) {
-        res.status(409).json({
-          success: false,
-          message: "Teacher email already exists.",
-        });
-        return;
-      }
-    }
-
-    // -----------------------------------------
-    // Update teacher
-    // -----------------------------------------
+    // ---------------------------------------------
+    // UPDATE
+    // ---------------------------------------------
 
     await teacher.update({
-      teacherId: cleanTeacherId,
-      name: cleanName,
-      email: cleanEmail,
-      phone: cleanPhone,
-    //   gender: cleanGender,
-      departmentId: cleanDepartmentId,
-      position: cleanPosition,
-      qualification: cleanQualification,
-      joinedDate: cleanJoinedDate,
-      status: cleanStatus,
+      teacherId,
+
+      name,
+
+      email,
+
+      phone,
+
+      gender,
+
+      departmentId: Number(departmentId),
+
+      position,
+
+      qualification: qualification || null,
+
+      joinedDate: joinedDate || null,
+
+      status,
+    });
+
+    // ---------------------------------------------
+    // RETURN UPDATED DATA
+    // ---------------------------------------------
+
+    const updatedTeacher = await Teacher.findByPk(id, {
+      include: [
+        {
+          model: Department,
+
+          as: "department",
+
+          attributes: ["id", "departmentCode", "departmentName"],
+        },
+      ],
     });
 
     res.status(200).json({
       success: true,
+
       message: "Teacher updated successfully.",
-      data: teacher,
+
+      data: updatedTeacher,
     });
   } catch (error) {
-    console.error("Error updating teacher:", error);
+    console.error("Update teacher error:", error);
 
     res.status(500).json({
       success: false,
@@ -584,17 +352,18 @@ export const updateTeacher = async (
 // =====================================================
 
 export const deleteTeacher = async (
-  req: Request<{ id: string }>,
+  req: Request,
   res: Response,
 ): Promise<void> => {
   try {
     const id = Number(req.params.id);
 
-    if (!Number.isInteger(id) || id <= 0) {
+    if (!Number.isInteger(id)) {
       res.status(400).json({
         success: false,
         message: "Invalid teacher ID.",
       });
+
       return;
     }
 
@@ -605,6 +374,7 @@ export const deleteTeacher = async (
         success: false,
         message: "Teacher not found.",
       });
+
       return;
     }
 
@@ -615,7 +385,7 @@ export const deleteTeacher = async (
       message: "Teacher deleted successfully.",
     });
   } catch (error) {
-    console.error("Error deleting teacher:", error);
+    console.error("Delete teacher error:", error);
 
     res.status(500).json({
       success: false,

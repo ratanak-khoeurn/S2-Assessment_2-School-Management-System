@@ -1,7 +1,12 @@
 import { DataTypes, Model, Optional } from "sequelize";
+
 import { sequelize } from "../../config/database.js";
 
-interface TeacherAttributes {
+// =====================================================
+// TEACHER ATTRIBUTES
+// =====================================================
+
+export interface TeacherAttributes {
   id: number;
 
   teacherId: string;
@@ -10,9 +15,9 @@ interface TeacherAttributes {
 
   email: string;
 
-  phone: string | null;
+  phone: string;
 
-  gender: "Male" | "Female" | null;
+  gender: "Male" | "Female" | "Other";
 
   departmentId: number;
 
@@ -20,7 +25,7 @@ interface TeacherAttributes {
 
   qualification: string | null;
 
-  joinedDate: Date | null;
+  joinedDate: string | null;
 
   status: "active" | "inactive";
 
@@ -29,17 +34,18 @@ interface TeacherAttributes {
   updatedAt?: Date;
 }
 
-interface TeacherCreationAttributes extends Optional<
+// =====================================================
+// CREATE ATTRIBUTES
+// =====================================================
+
+export interface TeacherCreationAttributes extends Optional<
   TeacherAttributes,
-  | "id"
-  | "phone"
-  | "gender"
-  | "qualification"
-  | "joinedDate"
-  | "status"
-  | "createdAt"
-  | "updatedAt"
+  "id" | "qualification" | "joinedDate" | "status" | "createdAt" | "updatedAt"
 > {}
+
+// =====================================================
+// TEACHER MODEL
+// =====================================================
 
 export class Teacher
   extends Model<TeacherAttributes, TeacherCreationAttributes>
@@ -53,9 +59,9 @@ export class Teacher
 
   declare email: string;
 
-  declare phone: string | null;
+  declare phone: string;
 
-  declare gender: "Male" | "Female" | null;
+  declare gender: "Male" | "Female" | "Other";
 
   declare departmentId: number;
 
@@ -63,7 +69,7 @@ export class Teacher
 
   declare qualification: string | null;
 
-  declare joinedDate: Date | null;
+  declare joinedDate: string | null;
 
   declare status: "active" | "inactive";
 
@@ -71,6 +77,10 @@ export class Teacher
 
   declare readonly updatedAt: Date;
 }
+
+// =====================================================
+// INIT
+// =====================================================
 
 Teacher.init(
   {
@@ -81,7 +91,7 @@ Teacher.init(
     },
 
     teacherId: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING(50),
       allowNull: false,
       unique: true,
       field: "teacher_id",
@@ -95,17 +105,17 @@ Teacher.init(
     email: {
       type: DataTypes.STRING(150),
       allowNull: false,
-      unique: true,
     },
 
     phone: {
       type: DataTypes.STRING(30),
-      allowNull: true,
+      allowNull: false,
     },
 
     gender: {
-      type: DataTypes.ENUM("Male", "Female"),
-      allowNull: true,
+      type: DataTypes.ENUM("Male", "Female", "Other"),
+      allowNull: false,
+      defaultValue: "Male",
     },
 
     departmentId: {
@@ -117,10 +127,11 @@ Teacher.init(
     position: {
       type: DataTypes.STRING(100),
       allowNull: false,
+      defaultValue: "Teacher",
     },
 
     qualification: {
-      type: DataTypes.STRING(150),
+      type: DataTypes.STRING(255),
       allowNull: true,
     },
 
@@ -136,10 +147,14 @@ Teacher.init(
       defaultValue: "active",
     },
   },
+
   {
     sequelize,
+
     tableName: "teachers",
+
     timestamps: true,
+
     underscored: true,
   },
 );

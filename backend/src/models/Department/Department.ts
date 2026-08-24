@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../config/database.js";
 
-interface DepartmentAttributes {
+export interface DepartmentAttributes {
   id: number;
   departmentCode: string;
   departmentName: string;
@@ -11,7 +11,7 @@ interface DepartmentAttributes {
   updatedAt?: Date;
 }
 
-interface DepartmentCreationAttributes extends Optional<
+export interface DepartmentCreationAttributes extends Optional<
   DepartmentAttributes,
   "id" | "description" | "status" | "createdAt" | "updatedAt"
 > {}
@@ -69,3 +69,5 @@ Department.init(
     underscored: true,
   },
 );
+
+export default Department;

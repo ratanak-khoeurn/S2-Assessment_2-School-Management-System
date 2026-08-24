@@ -1,437 +1,962 @@
-<style>
-    * {
-        box-sizing: border-box;
-    }
+<!DOCTYPE html>
+<html lang="en">
 
-    .app {
-        display: flex;
-        min-height: 100vh;
-        background: #f3f4f9;
-    }
+<head>
 
-    .container {
-        flex: 1;
-        padding: 32px 40px;
-    }
+    <meta charset="UTF-8">
 
-    .header {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        margin-bottom: 24px;
-    }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    .title {
-        font-size: 26px;
-        font-weight: 800;
-        margin: 0 0 4px;
-        color: #1f2430;
-    }
+    <title>Teachers | School Management System</title>
 
-    .subtitle {
-        margin: 0;
-        color: #7c8296;
-        font-size: 14.5px;
-    }
 
-    .btn {
-        border: none;
-        border-radius: 10px;
-        padding: 11px 18px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-    }
+    <!-- =====================================================
+         GOOGLE FONT
+    ====================================================== -->
 
-    .btn-primary {
-        background: #5b5fef;
-        color: #fff;
-    }
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 
-    .btn-primary:hover {
-        background: #4b4fd6;
-    }
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    .btn-secondary {
-        background: #eceef3;
-        color: #333;
-    }
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    .btn-secondary:hover {
-        background: #dfe1e8;
-    }
 
-    .alert {
-        padding: 12px 16px;
-        border-radius: 10px;
-        margin-bottom: 16px;
-        font-size: 14px;
-    }
+    <!-- =====================================================
+         STYLE
+    ====================================================== -->
 
-    .alert-error {
-        background: #fdeceb;
-        color: #d0492f;
-        border: 1px solid #f6cfc9;
-    }
+    <style>
+        /* =====================================================
+           RESET
+        ====================================================== */
 
-    .hidden {
-        display: none !important;
-    }
-
-    .controls {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        margin-bottom: 20px;
-    }
-
-    .search-box {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        background: #fff;
-        border: 1px solid #e6e8f0;
-        border-radius: 10px;
-        padding: 11px 16px;
-        max-width: 420px;
-    }
-
-    .search-box input {
-        border: none;
-        outline: none;
-        width: 100%;
-        font-size: 14.5px;
-        background: transparent;
-    }
-
-    .view-switch {
-        display: flex;
-        border: 1px solid #e6e8f0;
-        border-radius: 10px;
-        overflow: hidden;
-        background: #fff;
-    }
-
-    .view-switch button {
-        border: none;
-        background: transparent;
-        padding: 10px 16px;
-        font-size: 14px;
-        cursor: pointer;
-        color: #555;
-    }
-
-    .view-switch button.active {
-        background: #5b5fef;
-        color: #fff;
-    }
-
-    .teacher-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 18px;
-    }
-
-    .teacher-card {
-        background: #fff;
-        border: 1px solid #e6e8f0;
-        border-radius: 14px;
-        padding: 18px;
-    }
-
-    .teacher-card-top {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 12px;
-    }
-
-    .avatar {
-        width: 42px;
-        height: 42px;
-        border-radius: 50%;
-        background: #e7e8fb;
-        color: #5b5fef;
-        font-weight: 700;
-        font-size: 13.5px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
-
-    .teacher-card-name {
-        font-weight: 700;
-    }
-
-    .teacher-card-code {
-        color: #7c8296;
-        font-size: 12.5px;
-    }
-
-    .teacher-card-row {
-        font-size: 13.5px;
-        color: #444;
-        margin: 4px 0;
-    }
-
-    .teacher-card-actions {
-        display: flex;
-        gap: 8px;
-        margin-top: 14px;
-    }
-
-    .table-container {
-        background: #fff;
-        border: 1px solid #e6e8f0;
-        border-radius: 14px;
-        overflow-x: auto;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 1000px;
-    }
-
-    thead tr {
-        background: #f7f8fb;
-        border-bottom: 1px solid #e6e8f0;
-    }
-
-    th {
-        text-align: left;
-        padding: 14px 18px;
-        font-size: 13px;
-        font-weight: 700;
-        color: #3b3f4c;
-        white-space: nowrap;
-    }
-
-    td {
-        padding: 14px 18px;
-        font-size: 13.5px;
-        border-bottom: 1px solid #eef0f5;
-        white-space: nowrap;
-    }
-
-    tbody tr:last-child td {
-        border-bottom: none;
-    }
-
-    tbody tr:hover {
-        background: #fafbfd;
-    }
-
-    .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 4px 11px;
-        border-radius: 999px;
-        font-size: 12.5px;
-        font-weight: 600;
-    }
-
-    .badge.active {
-        background: #e7f6ec;
-        color: #2f9e5c;
-    }
-
-    .badge.inactive {
-        background: #fdeceb;
-        color: #d0492f;
-    }
-
-    .badge::before {
-        content: "";
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: currentColor;
-    }
-
-    .action-btn {
-        width: 30px;
-        height: 30px;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-        font-size: 14px;
-    }
-
-    .action-btn.view {
-        background: #eaf0fe;
-        color: #4c6ef5;
-    }
-
-    .action-btn.edit {
-        background: #fdf1e0;
-        color: #d99a3b;
-    }
-
-    .action-btn.delete {
-        background: #f3f0fc;
-        color: #8b7fc7;
-    }
-
-    .empty {
-        text-align: center;
-        padding: 60px 20px;
-        color: #7c8296;
-    }
-
-    .empty-icon {
-        font-size: 34px;
-        margin-bottom: 10px;
-    }
-
-    .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(20, 22, 30, 0.45);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 50;
-    }
-
-    .modal {
-        background: #fff;
-        border-radius: 16px;
-        width: 520px;
-        max-width: 92vw;
-        max-height: 88vh;
-        overflow-y: auto;
-        padding: 24px 26px;
-    }
-
-    .modal-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 16px;
-    }
-
-    .modal-header h2 {
-        margin: 0;
-        font-size: 19px;
-    }
-
-    .close-btn {
-        border: none;
-        background: transparent;
-        font-size: 16px;
-        cursor: pointer;
-        color: #7c8296;
-    }
-
-    .form-row {
-        display: flex;
-        gap: 14px;
-    }
-
-    .form-row .form-group {
-        flex: 1;
-    }
-
-    .form-group {
-        margin-bottom: 14px;
-    }
-
-    .form-label {
-        display: block;
-        font-size: 13px;
-        font-weight: 600;
-        margin-bottom: 6px;
-        color: #333;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #e0e2ea;
-        border-radius: 9px;
-        font-size: 14px;
-        outline: none;
-    }
-
-    .form-control:focus {
-        border-color: #5b5fef;
-    }
-
-    .modal-footer {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 8px;
-    }
-
-    .view-body div {
-        padding: 8px 0;
-        font-size: 14px;
-        border-bottom: 1px solid #f1f2f6;
-    }
-
-    .view-body strong {
-        display: inline-block;
-        width: 130px;
-        color: #555;
-    }
-
-    @media (max-width: 720px) {
-        .form-row {
-            flex-direction: column;
-            gap: 0;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
+
+
+        body {
+            font-family: "Inter", sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+
+        button,
+        input,
+        select {
+            font-family: inherit;
+        }
+
+
+        button {
+            cursor: pointer;
+        }
+
+
+        .hidden {
+            display: none !important;
+        }
+
+
+        /* =====================================================
+           APP
+        ====================================================== */
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+
+        /* =====================================================
+           MAIN CONTAINER
+        ====================================================== */
 
         .container {
-            padding: 20px 16px;
+            flex: 1;
+            min-width: 0;
+            padding: 32px;
         }
-    }
-</style>
+
+
+        /* =====================================================
+           HEADER
+        ====================================================== */
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+
+        .title {
+            font-size: 30px;
+            font-weight: 800;
+            color: #111827;
+            letter-spacing: -0.8px;
+        }
+
+
+        .subtitle {
+            margin-top: 6px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           BUTTONS
+        ====================================================== */
+
+        .btn {
+            border: none;
+            border-radius: 10px;
+            padding: 11px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s ease;
+        }
+
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.20);
+        }
+
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #334155;
+        }
+
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+
+        /* =====================================================
+           ERROR / SUCCESS
+        ====================================================== */
+
+        .alert {
+            padding: 13px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+
+        .alert-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+        }
+
+
+        .alert-success {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #15803d;
+        }
+
+
+        /* =====================================================
+           CONTROLS
+        ====================================================== */
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 430px;
+        }
+
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: #94a3b8;
+        }
+
+
+        .search-box input {
+            width: 100%;
+            height: 44px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            padding: 0 16px 0 42px;
+            outline: none;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+
+        .search-box input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+
+
+        /* =====================================================
+           VIEW SWITCH
+        ====================================================== */
+
+        .view-switch {
+            display: flex;
+            align-items: center;
+            padding: 4px;
+            background: #e9eef5;
+            border-radius: 10px;
+        }
+
+
+        .view-switch button {
+            border: none;
+            background: transparent;
+            padding: 8px 14px;
+            border-radius: 7px;
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+
+        .view-switch button.active {
+            background: white;
+            color: #2563eb;
+            box-shadow: 0 2px 5px rgba(15, 23, 42, 0.08);
+        }
+
+
+        /* =====================================================
+           TEACHER GRID
+        ====================================================== */
+
+        .teacher-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+
+        /* =====================================================
+           TEACHER CARD
+        ====================================================== */
+
+        .teacher-card {
+            background: white;
+            border: 1px solid #e5eaf0;
+            border-radius: 16px;
+            padding: 20px;
+            transition: 0.25s ease;
+            box-shadow:
+                0 3px 12px rgba(15, 23, 42, 0.04);
+        }
+
+
+        .teacher-card:hover {
+            transform: translateY(-3px);
+            border-color: #dbeafe;
+            box-shadow:
+                0 12px 30px rgba(15, 23, 42, 0.08);
+        }
+
+
+        .teacher-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+
+        .teacher-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: #dbeafe;
+            color: #1d4ed8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 800;
+            font-size: 15px;
+        }
+
+
+        .teacher-card-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #111827;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
+        }
+
+
+        .teacher-card-code {
+            margin-top: 4px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+
+        /* =====================================================
+           BADGES
+        ====================================================== */
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+
+        .badge.active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+
+        .badge.inactive {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+
+        /* =====================================================
+           CARD DETAILS
+        ====================================================== */
+
+        .teacher-card-details {
+            border-top: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
+            padding: 15px 0;
+        }
+
+
+        .teacher-card-row {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 11px;
+        }
+
+
+        .teacher-card-row:last-child {
+            margin-bottom: 0;
+        }
+
+
+        .teacher-card-row span {
+            color: #334155;
+        }
+
+
+        /* =====================================================
+           CARD ACTIONS
+        ====================================================== */
+
+        .teacher-card-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 7px;
+            margin-top: 15px;
+        }
+
+
+        .action-btn {
+            width: 34px;
+            height: 34px;
+            border: none;
+            border-radius: 8px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+
+        .action-btn.view {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+
+        .action-btn.view:hover {
+            background: #dbeafe;
+        }
+
+
+        .action-btn.edit {
+            background: #fffbeb;
+            color: #d97706;
+        }
+
+
+        .action-btn.edit:hover {
+            background: #fef3c7;
+        }
+
+
+        .action-btn.delete {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+
+        .action-btn.delete:hover {
+            background: #fee2e2;
+        }
+
+
+        /* =====================================================
+           TABLE
+        ====================================================== */
+
+        .table-container {
+            background: white;
+            border: 1px solid #e5eaf0;
+            border-radius: 14px;
+            overflow-x: auto;
+            box-shadow:
+                0 3px 12px rgba(15, 23, 42, 0.04);
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1100px;
+        }
+
+
+        th {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+
+        td {
+            padding: 15px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            font-size: 13px;
+        }
+
+
+        tr:hover td {
+            background: #f8fafc;
+        }
+
+
+        .table-name {
+            font-weight: 600;
+            color: #111827;
+        }
+
+
+        .table-code {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+
+        /* =====================================================
+           EMPTY
+        ====================================================== */
+
+        .empty {
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 14px;
+            border: 1px solid #e5eaf0;
+        }
+
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+
+        .empty h2 {
+            font-size: 20px;
+            margin-bottom: 7px;
+        }
+
+
+        .empty p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           MODAL
+        ====================================================== */
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 9999;
+        }
+
+
+        .modal {
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: white;
+            border-radius: 18px;
+            box-shadow:
+                0 25px 70px rgba(15, 23, 42, 0.25);
+            animation: modalShow 0.2s ease;
+        }
+
+
+        @keyframes modalShow {
+
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+        }
+
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #eef2f7;
+        }
+
+
+        .modal-header h2 {
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+
+        .close-btn {
+            width: 34px;
+            height: 34px;
+            border: none;
+            border-radius: 8px;
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 17px;
+        }
+
+
+        .close-btn:hover {
+            background: #e2e8f0;
+            color: #111827;
+        }
+
+
+        /* =====================================================
+           FORM
+        ====================================================== */
+
+        #teacherForm {
+            padding: 24px;
+        }
+
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .form-label {
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+
+        .form-label span {
+            color: #dc2626;
+        }
+
+
+        .form-control {
+            width: 100%;
+            height: 43px;
+            border: 1px solid #dbe2ea;
+            border-radius: 9px;
+            padding: 0 12px;
+            outline: none;
+            font-size: 13px;
+            background: white;
+            color: #1e293b;
+            transition: 0.2s;
+        }
+
+
+        textarea.form-control {
+            height: 100px;
+            padding: 12px;
+            resize: vertical;
+        }
+
+
+        .form-control:focus {
+            border-color: #2563eb;
+            box-shadow:
+                0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 18px 24px;
+            border-top: 1px solid #eef2f7;
+        }
+
+
+        /* =====================================================
+           VIEW MODAL
+        ====================================================== */
+
+        .view-body {
+            padding: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+
+        .detail-item {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 13px;
+        }
+
+
+        .detail-label {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 5px;
+        }
+
+
+        .detail-value {
+            color: #111827;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+
+        /* =====================================================
+           DELETE MODAL
+        ====================================================== */
+
+        .delete-content {
+            text-align: center;
+            padding: 30px 24px;
+        }
+
+
+        .delete-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            background: #fee2e2;
+            color: #dc2626;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 25px;
+        }
+
+
+        .delete-content h3 {
+            font-size: 19px;
+            margin-bottom: 8px;
+        }
+
+
+        .delete-content p {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+
+        .delete-teacher-name {
+            color: #111827;
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           LOADING
+        ====================================================== */
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+
+        .spinner {
+            width: 28px;
+            height: 28px;
+            border: 3px solid #dbeafe;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            animation: spin 0.8s linear infinite;
+        }
+
+
+        @keyframes spin {
+
+            to {
+                transform: rotate(360deg);
+            }
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ====================================================== */
+
+        @media (max-width: 900px) {
+
+            .container {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+
+            .header .btn {
+                width: 100%;
+            }
+
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+
+            .search-box {
+                max-width: none;
+            }
+
+
+            .view-switch {
+                align-self: flex-start;
+            }
+
+
+            .teacher-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .view-body {
+                grid-template-columns: 1fr;
+            }
+
+        }
+    </style>
+
+</head>
+
 
 <body>
+
+
     <div class="app">
+
+
+        <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
 
         <%- include('../components/sidebar') %>
 
+
+            <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
             <main class="container">
 
-                <!-- HEADER -->
+
+                <!-- =================================================
+             HEADER
+        ================================================== -->
+
                 <header class="header">
+
                     <div>
-                        <h1 class="title">Teachers</h1>
+
+                        <h1 class="title">
+                            Teachers
+                        </h1>
+
                         <p class="subtitle">
                             Manage teachers information
                         </p>
+
                     </div>
+
 
                     <button type="button" class="btn btn-primary" onclick="openAddModal()">
                         ＋ Add Teacher
                     </button>
+
                 </header>
 
-                <!-- ERROR -->
-                <div id="errorMessage" class="alert alert-error hidden"></div>
 
-                <!-- CONTROLS -->
+                <!-- =================================================
+             ALERT
+        ================================================== -->
+
+                <div id="alertMessage" class="alert hidden"></div>
+
+
+                <!-- =================================================
+             CONTROLS
+        ================================================== -->
+
                 <section class="controls">
 
-                    <div class="search-box">
-                        <span class="search-icon">🔍</span>
 
-                        <input type="search" id="searchInput" placeholder="Search teacher or code..."
+                    <div class="search-box">
+
+                        <span class="search-icon">
+                            🔍
+                        </span>
+
+                        <input type="search" id="searchInput" placeholder="Search teacher, ID, email or department..."
                             oninput="searchTeacher()">
+
                     </div>
+
 
                     <div class="view-switch">
 
                         <button type="button" id="gridButton" class="active" onclick="changeView('grid')">
                             ▦ Grid
                         </button>
+
 
                         <button type="button" id="tableButton" onclick="changeView('table')">
                             ☰ List
@@ -441,28 +966,87 @@
 
                 </section>
 
-                <!-- GRID -->
-                <section id="gridView" class="teacher-grid"></section>
 
-                <!-- TABLE -->
+                <!-- =================================================
+             LOADING
+        ================================================== -->
+
+                <div id="loading" class="loading">
+
+                    <div class="spinner"></div>
+
+                    Loading teachers...
+
+                </div>
+
+
+                <!-- =================================================
+             GRID
+        ================================================== -->
+
+                <section id="gridView" class="teacher-grid hidden"></section>
+
+
+                <!-- =================================================
+             TABLE
+        ================================================== -->
+
                 <section id="tableView" class="table-container hidden">
 
                     <table>
+
                         <thead>
+
                             <tr>
-                                <th>Teacher ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Gender</th>
-                                <th>Department</th>
-                                <th>Position</th>
-                                <th>Qualification</th>
-                                <th>Joined Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+
+                                <th>
+                                    Teacher ID
+                                </th>
+
+                                <th>
+                                    Name
+                                </th>
+
+                                <th>
+                                    Email
+                                </th>
+
+                                <th>
+                                    Phone
+                                </th>
+
+                                <th>
+                                    Gender
+                                </th>
+
+                                <th>
+                                    Department
+                                </th>
+
+                                <th>
+                                    Position
+                                </th>
+
+                                <th>
+                                    Qualification
+                                </th>
+
+                                <th>
+                                    Joined Date
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Actions
+                                </th>
+
                             </tr>
+
                         </thead>
+
 
                         <tbody id="teacherTableBody"></tbody>
 
@@ -470,134 +1054,279 @@
 
                 </section>
 
-                <!-- EMPTY -->
+
+                <!-- =================================================
+             EMPTY
+        ================================================== -->
+
                 <div id="emptyMessage" class="empty hidden">
 
-                    <div class="empty-icon">🏢</div>
+                    <div class="empty-icon">
+                        🧑‍🏫
+                    </div>
 
-                    <h2>No teacher found</h2>
+                    <h2>
+                        No teacher found
+                    </h2>
 
                     <p>
                         Try another search or create a new teacher.
                     </p>
 
                 </div>
+
+
             </main>
+
     </div>
 
-    <!-- ADD / EDIT MODAL -->
+
+    <!-- =========================================================
+     ADD / EDIT MODAL
+========================================================== -->
+
     <div id="formModal" class="modal-overlay hidden">
+
         <div class="modal">
+
+
             <div class="modal-header">
 
                 <h2 id="formModalTitle">
                     Add New Teacher
                 </h2>
 
-                <button class="close-btn" onclick="closeFormModal()">
+                <button type="button" class="close-btn" onclick="closeFormModal()">
                     ✕
                 </button>
 
             </div>
 
+
             <form id="teacherForm" onsubmit="saveTeacher(event)">
 
                 <input type="hidden" id="teacherId">
 
+
+                <!-- =============================================
+                 ROW 1
+            ============================================== -->
+
                 <div class="form-row">
 
                     <div class="form-group">
-                        <label class="form-label">Teacher Code *</label>
-                        <input type="text" id="teacherCode" class="form-control" placeholder="e.g. TCH-006" required>
+
+                        <label class="form-label" for="teacherCode">
+                            Teacher ID
+                            <span>*</span>
+                        </label>
+
+                        <input type="text" id="teacherCode" class="form-control" placeholder="e.g. TCH-001" required>
+
                     </div>
 
+
                     <div class="form-group">
-                        <label class="form-label">Full Name *</label>
+
+                        <label class="form-label" for="teacherName">
+                            Full Name
+                            <span>*</span>
+                        </label>
+
                         <input type="text" id="teacherName" class="form-control" placeholder="e.g. Sok Dara" required>
+
                     </div>
 
                 </div>
 
+
+                <!-- =============================================
+                 ROW 2
+            ============================================== -->
+
                 <div class="form-row">
 
                     <div class="form-group">
-                        <label class="form-label">Email *</label>
+
+                        <label class="form-label" for="teacherEmail">
+                            Email
+                            <span>*</span>
+                        </label>
+
                         <input type="email" id="teacherEmail" class="form-control" placeholder="name@example.com"
                             required>
+
                     </div>
 
+
                     <div class="form-group">
-                        <label class="form-label">Phone *</label>
+
+                        <label class="form-label" for="teacherPhone">
+                            Phone
+                            <span>*</span>
+                        </label>
+
                         <input type="tel" id="teacherPhone" class="form-control" placeholder="012 345 678" required>
+
                     </div>
 
                 </div>
 
+
+                <!-- =============================================
+                 ROW 3
+            ============================================== -->
+
                 <div class="form-row">
 
                     <div class="form-group">
-                        <label class="form-label">Gender</label>
+
+                        <label class="form-label" for="teacherGender">
+                            Gender
+                        </label>
+
                         <select id="teacherGender" class="form-control">
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
+
+                            <option value="Male">
+                                Male
+                            </option>
+
+                            <option value="Female">
+                                Female
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
                         </select>
+
                     </div>
 
+
                     <div class="form-group">
-                        <label class="form-label">Department *</label>
+
+                        <label class="form-label" for="teacherDepartment">
+                            Department
+                            <span>*</span>
+                        </label>
+
                         <select id="teacherDepartment" class="form-control" required>
-                            <option value="">Select department</option>
-                            <option value="Computer Science">Computer Science</option>
-                            <option value="Mathematics">Mathematics</option>
-                            <option value="English">English</option>
-                            <option value="Science">Science</option>
+
+                            <option value="">
+                                Loading departments...
+                            </option>
+
                         </select>
+
                     </div>
 
                 </div>
 
+
+                <!-- =============================================
+                 ROW 4
+            ============================================== -->
+
                 <div class="form-row">
 
                     <div class="form-group">
-                        <label class="form-label">Position</label>
+
+                        <label class="form-label" for="teacherPosition">
+                            Position
+                        </label>
+
                         <select id="teacherPosition" class="form-control">
-                            <option value="Teacher">Teacher</option>
-                            <option value="Senior Teacher">Senior Teacher</option>
-                            <option value="Head of Department">Head of Department</option>
+
+                            <option value="Teacher">
+                                Teacher
+                            </option>
+
+                            <option value="Senior Teacher">
+                                Senior Teacher
+                            </option>
+
+                            <option value="Head of Department">
+                                Head of Department
+                            </option>
+
+                            <option value="Lecturer">
+                                Lecturer
+                            </option>
+
+                            <option value="Professor">
+                                Professor
+                            </option>
+
                         </select>
+
                     </div>
 
+
                     <div class="form-group">
-                        <label class="form-label">Qualification</label>
+
+                        <label class="form-label" for="teacherQualification">
+                            Qualification
+                        </label>
+
                         <input type="text" id="teacherQualification" class="form-control"
-                            placeholder="e.g. M.Ed in Mathematics">
+                            placeholder="e.g. M.Sc in Computer Science">
+
                     </div>
 
                 </div>
+
+
+                <!-- =============================================
+                 ROW 5
+            ============================================== -->
 
                 <div class="form-row">
 
                     <div class="form-group">
-                        <label class="form-label">Joined Date</label>
+
+                        <label class="form-label" for="teacherJoined">
+                            Joined Date
+                        </label>
+
                         <input type="date" id="teacherJoined" class="form-control">
+
                     </div>
 
+
                     <div class="form-group">
-                        <label class="form-label">Status</label>
+
+                        <label class="form-label" for="teacherStatus">
+                            Status
+                        </label>
+
                         <select id="teacherStatus" class="form-control">
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
+
+                            <option value="active">
+                                Active
+                            </option>
+
+                            <option value="inactive">
+                                Inactive
+                            </option>
+
                         </select>
+
                     </div>
 
                 </div>
+
+
+                <!-- =============================================
+                 FOOTER
+            ============================================== -->
 
                 <div class="modal-footer">
 
                     <button type="button" class="btn btn-secondary" onclick="closeFormModal()">
                         Cancel
                     </button>
+
 
                     <button type="submit" class="btn btn-primary" id="submitButton">
                         Create Teacher
@@ -608,268 +1337,1895 @@
             </form>
 
         </div>
+
     </div>
 
-    <!-- VIEW MODAL -->
+
+    <!-- =========================================================
+     VIEW MODAL
+========================================================== -->
+
     <div id="viewModal" class="modal-overlay hidden">
+
         <div class="modal">
+
+
             <div class="modal-header">
-                <h2>Teacher Details</h2>
-                <button class="close-btn" onclick="closeViewModal()">✕</button>
+
+                <h2>
+                    Teacher Details
+                </h2>
+
+                <button type="button" class="close-btn" onclick="closeViewModal()">
+                    ✕
+                </button>
+
             </div>
+
+
             <div id="viewModalBody" class="view-body"></div>
+
+
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeViewModal()">Close</button>
+
+                <button type="button" class="btn btn-secondary" onclick="closeViewModal()">
+                    Close
+                </button>
+
             </div>
+
         </div>
+
     </div>
 
-    <!-- Base styling for the classes used above. Remove this block if your app
-         already defines .btn / .modal-overlay / .table-container etc. in a
-         shared stylesheet, and keep only the .teacher-grid / .badge / .view-switch
-         rules that are specific to this page. -->
 
+    <!-- =========================================================
+     DELETE MODAL
+========================================================== -->
+
+    <div id="deleteModal" class="modal-overlay hidden">
+
+        <div class="modal" style="max-width: 430px;">
+
+
+            <div class="modal-header">
+
+                <h2>
+                    Delete Teacher
+                </h2>
+
+                <button type="button" class="close-btn" onclick="closeDeleteModal()">
+                    ✕
+                </button>
+
+            </div>
+
+
+            <div class="delete-content">
+
+                <div class="delete-icon">
+                    🗑
+                </div>
+
+
+                <h3>
+                    Delete this teacher?
+                </h3>
+
+
+                <p>
+
+                    Are you sure you want to delete
+
+                    <span id="deleteTeacherName" class="delete-teacher-name"></span>
+
+                    ?
+
+                    <br>
+
+                    This action cannot be undone.
+
+                </p>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">
+                    Cancel
+                </button>
+
+
+                <button type="button" class="btn btn-danger" id="confirmDeleteButton" onclick="confirmDeleteTeacher()">
+                    Delete Teacher
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+     JAVASCRIPT
+========================================================== -->
 
     <script>
-        // ---- Sample data store (swap for a fetch('/api/teachers') call when a backend exists) ----
-        let teachers = [
-            { id: 1, code: 'TCH-001', name: 'Sok Dara', email: 'sok.dara@example.com', phone: '012 345 678', gender: 'Male', department: 'Computer Science', position: 'Senior Teacher', qualification: 'M.Sc in Computer Science', joined: '2023-01-15', status: 'active' },
-            { id: 2, code: 'TCH-002', name: 'Chanthy Sreypich', email: 'chanthy.sreypich@example.com', phone: '097 234 567', gender: 'Female', department: 'Mathematics', position: 'Teacher', qualification: 'B.Ed in Mathematics', joined: '2023-03-20', status: 'active' },
-            { id: 3, code: 'TCH-003', name: 'Vannak Chea', email: 'vannak.chea@example.com', phone: '010 456 789', gender: 'Male', department: 'English', position: 'Teacher', qualification: 'B.A in English', joined: '2022-08-10', status: 'inactive' },
-        ];
 
-        let currentView = 'grid';
-        let nextId = teachers.length + 1;
 
-        // ---- Helpers ----
-        function escapeHtml(str) {
-            return String(str ?? '').replace(/[&<>"']/g, (c) => ({
-                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-            }[c]));
+        /* =========================================================
+           GLOBAL VARIABLES
+        ========================================================== */
+
+        let teachers = [];
+
+        let currentView = "grid";
+
+        let deleteTeacherId = null;
+
+
+        /* =========================================================
+           DOM HELPERS
+        ========================================================== */
+
+        function getValue(id) {
+
+            const element =
+                document.getElementById(id);
+
+            return element
+                ? element.value.trim()
+                : "";
+
         }
 
-        function initials(name) {
-            return name.split(' ').filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('');
+
+        function setValue(id, value) {
+
+            const element =
+                document.getElementById(id);
+
+            if (element) {
+
+                element.value =
+                    value ?? "";
+
+            }
+
         }
+
+
+        /* =========================================================
+           ESCAPE HTML
+        ========================================================== */
+
+        function escapeHtml(value) {
+
+            return String(
+                value ?? ""
+            ).replace(
+                /[&<>"']/g,
+                function (character) {
+
+                    const entities = {
+
+                        "&": "&amp;",
+                        "<": "&lt;",
+                        ">": "&gt;",
+                        '"': "&quot;",
+                        "'": "&#39;"
+
+                    };
+
+                    return entities[
+                        character
+                    ];
+
+                }
+            );
+
+        }
+
+
+        /* =========================================================
+           INITIALS
+        ========================================================== */
+
+        function getInitials(name) {
+
+            if (!name) {
+                return "?";
+            }
+
+
+            return name
+                .split(" ")
+                .filter(Boolean)
+                .slice(0, 2)
+                .map(
+                    word =>
+                        word[0]
+                            .toUpperCase()
+                )
+                .join("");
+
+        }
+
+
+        /* =========================================================
+           ALERT
+        ========================================================== */
+
+        function showAlert(
+            message,
+            type = "error"
+        ) {
+
+            const alert =
+                document.getElementById(
+                    "alertMessage"
+                );
+
+
+            alert.textContent =
+                message;
+
+
+            alert.className =
+                `alert alert-${type}`;
+
+
+            setTimeout(() => {
+
+                alert.classList.add(
+                    "hidden"
+                );
+
+            }, 4000);
+
+        }
+
 
         function showError(message) {
-            const el = document.getElementById('errorMessage');
-            el.textContent = message;
-            el.classList.remove('hidden');
-            setTimeout(() => el.classList.add('hidden'), 4000);
+
+            showAlert(
+                message,
+                "error"
+            );
+
         }
 
-        // ---- View switching ----
-        function changeView(view) {
-            currentView = view;
-            document.getElementById('gridView').classList.toggle('hidden', view !== 'grid');
-            document.getElementById('tableView').classList.toggle('hidden', view !== 'table');
-            document.getElementById('gridButton').classList.toggle('active', view === 'grid');
-            document.getElementById('tableButton').classList.toggle('active', view === 'table');
+
+        function showSuccess(message) {
+
+            showAlert(
+                message,
+                "success"
+            );
+
         }
 
-        // ---- Search ----
+
+        /* =========================================================
+           LOAD DEPARTMENTS
+        ========================================================== */
+
+        async function loadDepartments() {
+
+            const select =
+                document.getElementById(
+                    "teacherDepartment"
+                );
+
+
+            try {
+
+                select.innerHTML = `
+            <option value="">
+                Loading departments...
+            </option>
+        `;
+
+
+                const response =
+                    await fetch(
+                        "/api/departments"
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        result.message ||
+                        "Failed to load departments."
+                    );
+
+                }
+
+
+                select.innerHTML = `
+            <option value="">
+                Select department
+            </option>
+        `;
+
+
+                const departments =
+                    result.data || [];
+
+
+                departments.forEach(
+                    department => {
+
+                        const option =
+                            document.createElement(
+                                "option"
+                            );
+
+
+                        option.value =
+                            department.id;
+
+
+                        option.textContent =
+                            `${department.departmentCode} - ${department.departmentName}`;
+
+
+                        select.appendChild(
+                            option
+                        );
+
+                    }
+                );
+
+
+                if (
+                    departments.length === 0
+                ) {
+
+                    select.innerHTML = `
+                <option value="">
+                    No departments available
+                </option>
+            `;
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Department error:",
+                    error
+                );
+
+
+                select.innerHTML = `
+            <option value="">
+                Failed to load departments
+            </option>
+        `;
+
+
+                showError(
+                    error.message ||
+                    "Unable to load departments."
+                );
+
+            }
+
+        }
+
+
+        /* =========================================================
+           LOAD TEACHERS
+        ========================================================== */
+
+        async function loadTeachers() {
+
+            const loading =
+                document.getElementById(
+                    "loading"
+                );
+
+
+            try {
+
+                loading.classList.remove(
+                    "hidden"
+                );
+
+
+                const response =
+                    await fetch(
+                        "/api/teachers"
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        result.message ||
+                        "Failed to load teachers."
+                    );
+
+                }
+
+
+                teachers =
+                    result.data || [];
+
+
+                renderTeachers();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Teacher loading error:",
+                    error
+                );
+
+
+                showError(
+                    error.message ||
+                    "Unable to load teachers."
+                );
+
+            } finally {
+
+                loading.classList.add(
+                    "hidden"
+                );
+
+            }
+
+        }
+
+
+        /* =========================================================
+           SEARCH
+        ========================================================== */
+
         function searchTeacher() {
+
             renderTeachers();
+
         }
+
 
         function getFilteredTeachers() {
-            const q = document.getElementById('searchInput').value.trim().toLowerCase();
-            if (!q) return teachers;
-            return teachers.filter(t =>
-                t.name.toLowerCase().includes(q) ||
-                t.code.toLowerCase().includes(q) ||
-                t.email.toLowerCase().includes(q) ||
-                t.department.toLowerCase().includes(q)
+
+            const input =
+                document.getElementById(
+                    "searchInput"
+                );
+
+
+            const query =
+                input.value
+                    .trim()
+                    .toLowerCase();
+
+
+            if (!query) {
+
+                return teachers;
+
+            }
+
+
+            return teachers.filter(
+                teacher => {
+
+                    const department =
+                        teacher.department
+                            ?.departmentName ||
+                        "";
+
+
+                    return (
+
+                        teacher.teacherId
+                            ?.toLowerCase()
+                            .includes(query)
+
+                        ||
+
+                        teacher.name
+                            ?.toLowerCase()
+                            .includes(query)
+
+                        ||
+
+                        teacher.email
+                            ?.toLowerCase()
+                            .includes(query)
+
+                        ||
+
+                        teacher.phone
+                            ?.toLowerCase()
+                            .includes(query)
+
+                        ||
+
+                        department
+                            .toLowerCase()
+                            .includes(query)
+
+                        ||
+
+                        teacher.position
+                            ?.toLowerCase()
+                            .includes(query)
+
+                    );
+
+                }
             );
+
         }
 
-        // ---- Rendering ----
-        function renderTeachers() {
-            const list = getFilteredTeachers();
 
-            document.getElementById('emptyMessage').classList.toggle('hidden', list.length !== 0);
-            document.getElementById('gridView').classList.toggle('hidden', list.length === 0 || currentView !== 'grid');
-            document.getElementById('tableView').classList.toggle('hidden', list.length === 0 || currentView !== 'table');
+        /* =========================================================
+           CHANGE VIEW
+        ========================================================== */
+
+        function changeView(view) {
+
+            currentView =
+                view;
+
+
+            const grid =
+                document.getElementById(
+                    "gridView"
+                );
+
+
+            const table =
+                document.getElementById(
+                    "tableView"
+                );
+
+
+            const gridButton =
+                document.getElementById(
+                    "gridButton"
+                );
+
+
+            const tableButton =
+                document.getElementById(
+                    "tableButton"
+                );
+
+
+            grid.classList.toggle(
+                "hidden",
+                view !== "grid"
+            );
+
+
+            table.classList.toggle(
+                "hidden",
+                view !== "table"
+            );
+
+
+            gridButton.classList.toggle(
+                "active",
+                view === "grid"
+            );
+
+
+            tableButton.classList.toggle(
+                "active",
+                view === "table"
+            );
+
+
+            renderTeachers();
+
+        }
+
+
+        /* =========================================================
+           RENDER TEACHERS
+        ========================================================== */
+
+        function renderTeachers() {
+
+            const list =
+                getFilteredTeachers();
+
+
+            const empty =
+                document.getElementById(
+                    "emptyMessage"
+                );
+
+
+            const grid =
+                document.getElementById(
+                    "gridView"
+                );
+
+
+            const table =
+                document.getElementById(
+                    "tableView"
+                );
+
+
+            if (list.length === 0) {
+
+                empty.classList.remove(
+                    "hidden"
+                );
+
+                grid.classList.add(
+                    "hidden"
+                );
+
+                table.classList.add(
+                    "hidden"
+                );
+
+                return;
+
+            }
+
+
+            empty.classList.add(
+                "hidden"
+            );
+
+
+            grid.classList.toggle(
+                "hidden",
+                currentView !== "grid"
+            );
+
+
+            table.classList.toggle(
+                "hidden",
+                currentView !== "table"
+            );
+
 
             renderGrid(list);
+
             renderTable(list);
+
         }
+
+
+        /* =========================================================
+           RENDER GRID
+        ========================================================== */
 
         function renderGrid(list) {
-            const grid = document.getElementById('gridView');
-            grid.innerHTML = list.map(t => `
-                <div class="teacher-card">
-                    <div class="teacher-card-top">
-                        <div class="avatar">${escapeHtml(initials(t.name))}</div>
-                        <div>
-                            <div class="teacher-card-name">${escapeHtml(t.name)}</div>
-                            <div class="teacher-card-code">${escapeHtml(t.code)}</div>
+
+            const grid =
+                document.getElementById(
+                    "gridView"
+                );
+
+
+            grid.innerHTML =
+                list.map(
+                    teacher => {
+
+                        const department =
+                            teacher.department
+                                ?.departmentName ||
+                            "No Department";
+
+
+                        const initials =
+                            getInitials(
+                                teacher.name
+                            );
+
+
+                        return `
+
+                    <div class="teacher-card">
+
+                        <div class="teacher-card-top">
+
+                            <div class="teacher-profile">
+
+                                <div class="avatar">
+
+                                    ${escapeHtml(
+                            initials
+                        )}
+
+                                </div>
+
+
+                                <div>
+
+                                    <div class="teacher-card-name">
+
+                                        ${escapeHtml(
+                            teacher.name
+                        )}
+
+                                    </div>
+
+
+                                    <div class="teacher-card-code">
+
+                                        ${escapeHtml(
+                            teacher.teacherId
+                        )}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <span
+                                class="badge ${teacher.status === "active"
+                                ? "active"
+                                : "inactive"
+                            }"
+                            >
+
+                                ${teacher.status === "active"
+                                ? "Active"
+                                : "Inactive"
+                            }
+
+                            </span>
+
                         </div>
+
+
+                        <div class="teacher-card-details">
+
+
+                            <div class="teacher-card-row">
+
+                                ✉
+
+                                <span>
+                                    ${escapeHtml(
+                                teacher.email
+                            )}
+                                </span>
+
+                            </div>
+
+
+                            <div class="teacher-card-row">
+
+                                ☎
+
+                                <span>
+                                    ${escapeHtml(
+                                teacher.phone
+                            )}
+                                </span>
+
+                            </div>
+
+
+                            <div class="teacher-card-row">
+
+                                🏫
+
+                                <span>
+                                    ${escapeHtml(
+                                department
+                            )}
+                                </span>
+
+                            </div>
+
+
+                            <div class="teacher-card-row">
+
+                                ◉
+
+                                <span>
+                                    ${escapeHtml(
+                                teacher.position
+                            )}
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="teacher-card-actions">
+
+
+                            <button
+                                type="button"
+                                class="action-btn view"
+                                onclick="viewTeacher(${teacher.id})"
+                                title="View"
+                            >
+                                👁
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="action-btn edit"
+                                onclick="editTeacher(${teacher.id})"
+                                title="Edit"
+                            >
+                                ✎
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="action-btn delete"
+                                onclick="deleteTeacher(${teacher.id})"
+                                title="Delete"
+                            >
+                                🗑
+                            </button>
+
+
+                        </div>
+
                     </div>
-                    <div class="teacher-card-row">📧 ${escapeHtml(t.email)}</div>
-                    <div class="teacher-card-row">📞 ${escapeHtml(t.phone)}</div>
-                    <div class="teacher-card-row">🏫 ${escapeHtml(t.department)} · ${escapeHtml(t.position)}</div>
-                    <div class="teacher-card-row">
-                        <span class="badge ${t.status === 'active' ? 'active' : 'inactive'}">
-                            ${t.status === 'active' ? 'Active' : 'Inactive'}
-                        </span>
-                    </div>
-                    <div class="teacher-card-actions">
-                        <button class="action-btn view" onclick="viewTeacher(${t.id})" title="View">👁</button>
-                        <button class="action-btn edit" onclick="editTeacher(${t.id})" title="Edit">✏️</button>
-                        <button class="action-btn delete" onclick="deleteTeacher(${t.id})" title="Delete">🗑️</button>
-                    </div>
-                </div>
-            `).join('');
+
+                `;
+
+                    }
+                ).join("");
+
         }
+
+
+        /* =========================================================
+           RENDER TABLE
+        ========================================================== */
 
         function renderTable(list) {
-            const body = document.getElementById('teacherTableBody');
-            body.innerHTML = list.map(t => `
-                <tr>
-                    <td>${escapeHtml(t.code)}</td>
-                    <td>${escapeHtml(t.name)}</td>
-                    <td>${escapeHtml(t.email)}</td>
-                    <td>${escapeHtml(t.phone)}</td>
-                    <td>${escapeHtml(t.gender)}</td>
-                    <td>${escapeHtml(t.department)}</td>
-                    <td>${escapeHtml(t.position)}</td>
-                    <td>${escapeHtml(t.qualification)}</td>
-                    <td>${escapeHtml(t.joined)}</td>
-                    <td>
-                        <span class="badge ${t.status === 'active' ? 'active' : 'inactive'}">
-                            ${t.status === 'active' ? 'Active' : 'Inactive'}
-                        </span>
-                    </td>
-                    <td>
-                        <button class="action-btn view" onclick="viewTeacher(${t.id})" title="View">👁</button>
-                        <button class="action-btn edit" onclick="editTeacher(${t.id})" title="Edit">✏️</button>
-                        <button class="action-btn delete" onclick="deleteTeacher(${t.id})" title="Delete">🗑️</button>
-                    </td>
-                </tr>
-            `).join('');
+
+            const body =
+                document.getElementById(
+                    "teacherTableBody"
+                );
+
+
+            body.innerHTML =
+                list.map(
+                    teacher => {
+
+                        const department =
+                            teacher.department
+                                ?.departmentName ||
+                            "No Department";
+
+
+                        return `
+
+                    <tr>
+
+                        <td>
+
+                            <span class="table-code">
+
+                                ${escapeHtml(
+                            teacher.teacherId
+                        )}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="table-name">
+
+                                ${escapeHtml(
+                            teacher.name
+                        )}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            ${escapeHtml(
+                            teacher.email
+                        )}
+
+                        </td>
+
+
+                        <td>
+
+                            ${escapeHtml(
+                            teacher.phone
+                        )}
+
+                        </td>
+
+
+                        <td>
+
+                            ${escapeHtml(
+                            teacher.gender
+                        )}
+
+                        </td>
+
+
+                        <td>
+
+                            ${escapeHtml(
+                            department
+                        )}
+
+                        </td>
+
+
+                        <td>
+
+                            ${escapeHtml(
+                            teacher.position
+                        )}
+
+                        </td>
+
+
+                        <td>
+
+                            ${escapeHtml(
+                            teacher.qualification ||
+                            "-"
+                        )}
+
+                        </td>
+
+
+                        <td>
+
+                            ${escapeHtml(
+                            teacher.joinedDate ||
+                            "-"
+                        )}
+
+                        </td>
+
+
+                        <td>
+
+                            <span
+                                class="badge ${teacher.status === "active"
+                                ? "active"
+                                : "inactive"
+                            }"
+                            >
+
+                                ${teacher.status === "active"
+                                ? "Active"
+                                : "Inactive"
+                            }
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <button
+                                type="button"
+                                class="action-btn view"
+                                onclick="viewTeacher(${teacher.id})"
+                                title="View"
+                            >
+                                👁
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="action-btn edit"
+                                onclick="editTeacher(${teacher.id})"
+                                title="Edit"
+                            >
+                                ✎
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="action-btn delete"
+                                onclick="deleteTeacher(${teacher.id})"
+                                title="Delete"
+                            >
+                                🗑
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+                    }
+                ).join("");
+
         }
 
-        // ---- Add / Edit modal ----
+
+        /* =========================================================
+           OPEN ADD MODAL
+        ========================================================== */
+
         function openAddModal() {
-            document.getElementById('formModalTitle').textContent = 'Add New Teacher';
-            document.getElementById('submitButton').textContent = 'Create Teacher';
 
-            document.getElementById('teacherId').value = '';
-            document.getElementById('teacherCode').value = '';
-            document.getElementById('teacherName').value = '';
-            document.getElementById('teacherEmail').value = '';
-            document.getElementById('teacherPhone').value = '';
-            document.getElementById('teacherGender').value = 'Male';
-            document.getElementById('teacherDepartment').value = '';
-            document.getElementById('teacherPosition').value = 'Teacher';
-            document.getElementById('teacherQualification').value = '';
-            document.getElementById('teacherJoined').value = '';
-            document.getElementById('teacherStatus').value = 'active';
+            document.getElementById(
+                "formModalTitle"
+            ).textContent =
+                "Add New Teacher";
 
-            document.getElementById('formModal').classList.remove('hidden');
+
+            document.getElementById(
+                "submitButton"
+            ).textContent =
+                "Create Teacher";
+
+
+            document.getElementById(
+                "teacherForm"
+            ).reset();
+
+
+            setValue(
+                "teacherId",
+                ""
+            );
+
+
+            setValue(
+                "teacherGender",
+                "Male"
+            );
+
+
+            setValue(
+                "teacherPosition",
+                "Teacher"
+            );
+
+
+            setValue(
+                "teacherStatus",
+                "active"
+            );
+
+
+            document.getElementById(
+                "formModal"
+            ).classList.remove(
+                "hidden"
+            );
+
         }
+
+
+        /* =========================================================
+           EDIT TEACHER
+        ========================================================== */
 
         function editTeacher(id) {
-            const t = teachers.find(x => x.id === id);
-            if (!t) return;
 
-            document.getElementById('formModalTitle').textContent = 'Edit Teacher';
-            document.getElementById('submitButton').textContent = 'Save Changes';
+            const teacher =
+                teachers.find(
+                    item =>
+                        Number(item.id) ===
+                        Number(id)
+                );
 
-            document.getElementById('teacherId').value = t.id;
-            document.getElementById('teacherCode').value = t.code;
-            document.getElementById('teacherName').value = t.name;
-            document.getElementById('teacherEmail').value = t.email;
-            document.getElementById('teacherPhone').value = t.phone;
-            document.getElementById('teacherGender').value = t.gender;
-            document.getElementById('teacherDepartment').value = t.department;
-            document.getElementById('teacherPosition').value = t.position;
-            document.getElementById('teacherQualification').value = t.qualification;
-            document.getElementById('teacherJoined').value = t.joined;
-            document.getElementById('teacherStatus').value = t.status;
 
-            document.getElementById('formModal').classList.remove('hidden');
+            if (!teacher) {
+
+                showError(
+                    "Teacher not found."
+                );
+
+                return;
+
+            }
+
+
+            document.getElementById(
+                "formModalTitle"
+            ).textContent =
+                "Edit Teacher";
+
+
+            document.getElementById(
+                "submitButton"
+            ).textContent =
+                "Save Changes";
+
+
+            setValue(
+                "teacherId",
+                teacher.id
+            );
+
+
+            setValue(
+                "teacherCode",
+                teacher.teacherId
+            );
+
+
+            setValue(
+                "teacherName",
+                teacher.name
+            );
+
+
+            setValue(
+                "teacherEmail",
+                teacher.email
+            );
+
+
+            setValue(
+                "teacherPhone",
+                teacher.phone
+            );
+
+
+            setValue(
+                "teacherGender",
+                teacher.gender
+            );
+
+
+            setValue(
+                "teacherDepartment",
+                teacher.departmentId
+            );
+
+
+            setValue(
+                "teacherPosition",
+                teacher.position
+            );
+
+
+            setValue(
+                "teacherQualification",
+                teacher.qualification
+            );
+
+
+            setValue(
+                "teacherJoined",
+                teacher.joinedDate
+            );
+
+
+            setValue(
+                "teacherStatus",
+                teacher.status
+            );
+
+
+            document.getElementById(
+                "formModal"
+            ).classList.remove(
+                "hidden"
+            );
+
         }
+
+
+        /* =========================================================
+           CLOSE FORM MODAL
+        ========================================================== */
 
         function closeFormModal() {
-            document.getElementById('formModal').classList.add('hidden');
+
+            document.getElementById(
+                "formModal"
+            ).classList.add(
+                "hidden"
+            );
+
         }
 
-        function saveTeacher(event) {
+
+        /* =========================================================
+           SAVE TEACHER
+        ========================================================== */
+
+        async function saveTeacher(event) {
+
             event.preventDefault();
 
-            const id = document.getElementById('teacherId').value;
+
+            const id =
+                getValue("teacherId");
+
+
             const data = {
-                code: document.getElementById('teacherCode').value.trim(),
-                name: document.getElementById('teacherName').value.trim(),
-                email: document.getElementById('teacherEmail').value.trim(),
-                phone: document.getElementById('teacherPhone').value.trim(),
-                gender: document.getElementById('teacherGender').value,
-                department: document.getElementById('teacherDepartment').value,
-                position: document.getElementById('teacherPosition').value,
-                qualification: document.getElementById('teacherQualification').value.trim(),
-                joined: document.getElementById('teacherJoined').value,
-                status: document.getElementById('teacherStatus').value,
+
+                teacherId:
+                    getValue("teacherCode"),
+
+                name:
+                    getValue("teacherName"),
+
+                email:
+                    getValue("teacherEmail"),
+
+                phone:
+                    getValue("teacherPhone"),
+
+                gender:
+                    getValue("teacherGender"),
+
+                departmentId:
+                    Number(
+                        getValue(
+                            "teacherDepartment"
+                        )
+                    ),
+
+                position:
+                    getValue("teacherPosition"),
+
+                qualification:
+                    getValue(
+                        "teacherQualification"
+                    ) || null,
+
+                joinedDate:
+                    getValue(
+                        "teacherJoined"
+                    ) || null,
+
+                status:
+                    getValue("teacherStatus")
+
             };
 
-            if (!data.code || !data.name || !data.email || !data.phone || !data.department) {
-                showError('Please fill in all required fields.');
+
+            if (
+
+                !data.teacherId ||
+
+                !data.name ||
+
+                !data.email ||
+
+                !data.phone ||
+
+                !data.departmentId
+
+            ) {
+
+                showError(
+                    "Please fill in all required fields."
+                );
+
+                return;
+
+            }
+
+
+            const submitButton =
+                document.getElementById(
+                    "submitButton"
+                );
+
+
+            try {
+
+                submitButton.disabled =
+                    true;
+
+
+                submitButton.textContent =
+                    id
+                        ? "Saving..."
+                        : "Creating...";
+
+
+                const url =
+                    id
+                        ? `/api/teachers/${id}`
+                        : "/api/teachers";
+
+
+                const method =
+                    id
+                        ? "PUT"
+                        : "POST";
+
+
+                const response =
+                    await fetch(
+                        url,
+                        {
+
+                            method,
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    data
+                                )
+
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        result.message ||
+                        "Failed to save teacher."
+                    );
+
+                }
+
+
+                closeFormModal();
+
+
+                await loadTeachers();
+
+
+                showSuccess(
+
+                    id
+
+                        ? "Teacher updated successfully."
+
+                        : "Teacher created successfully."
+
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Save teacher error:",
+                    error
+                );
+
+
+                showError(
+                    error.message ||
+                    "Failed to save teacher."
+                );
+
+
+            } finally {
+
+                submitButton.disabled =
+                    false;
+
+
+                submitButton.textContent =
+                    id
+                        ? "Save Changes"
+                        : "Create Teacher";
+
+            }
+
+        }
+
+
+        /* =========================================================
+           VIEW TEACHER
+        ========================================================== */
+
+        function viewTeacher(id) {
+
+            const teacher =
+                teachers.find(
+                    item =>
+                        Number(item.id) ===
+                        Number(id)
+                );
+
+
+            if (!teacher) {
+
+                showError(
+                    "Teacher not found."
+                );
+
+                return;
+
+            }
+
+
+            const department =
+                teacher.department
+                    ?.departmentName ||
+                "No Department";
+
+
+            const body =
+                document.getElementById(
+                    "viewModalBody"
+                );
+
+
+            body.innerHTML = `
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                Teacher ID
+            </div>
+
+            <div class="detail-value">
+                ${escapeHtml(
+                teacher.teacherId
+            )}
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                Full Name
+            </div>
+
+            <div class="detail-value">
+                ${escapeHtml(
+                teacher.name
+            )}
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                Email
+            </div>
+
+            <div class="detail-value">
+                ${escapeHtml(
+                teacher.email
+            )}
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                Phone
+            </div>
+
+            <div class="detail-value">
+                ${escapeHtml(
+                teacher.phone
+            )}
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                Gender
+            </div>
+
+            <div class="detail-value">
+                ${escapeHtml(
+                teacher.gender
+            )}
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                Department
+            </div>
+
+            <div class="detail-value">
+                ${escapeHtml(
+                department
+            )}
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                Position
+            </div>
+
+            <div class="detail-value">
+                ${escapeHtml(
+                teacher.position
+            )}
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                Qualification
+            </div>
+
+            <div class="detail-value">
+                ${escapeHtml(
+                teacher.qualification ||
+                "-"
+            )}
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                Joined Date
+            </div>
+
+            <div class="detail-value">
+                ${escapeHtml(
+                teacher.joinedDate ||
+                "-"
+            )}
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                Status
+            </div>
+
+            <div class="detail-value">
+
+                <span
+                    class="badge ${teacher.status === "active"
+                    ? "active"
+                    : "inactive"
+                }"
+                >
+
+                    ${teacher.status === "active"
+                    ? "Active"
+                    : "Inactive"
+                }
+
+                </span>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+            document.getElementById(
+                "viewModal"
+            ).classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        /* =========================================================
+           CLOSE VIEW MODAL
+        ========================================================== */
+
+        function closeViewModal() {
+
+            document.getElementById(
+                "viewModal"
+            ).classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        /* =========================================================
+           DELETE TEACHER
+        ========================================================== */
+
+        function deleteTeacher(id) {
+
+            const teacher =
+                teachers.find(
+                    item =>
+                        Number(item.id) ===
+                        Number(id)
+                );
+
+
+            if (!teacher) {
+
+                showError(
+                    "Teacher not found."
+                );
+
+                return;
+
+            }
+
+
+            deleteTeacherId =
+                teacher.id;
+
+
+            document.getElementById(
+                "deleteTeacherName"
+            ).textContent =
+                teacher.name;
+
+
+            document.getElementById(
+                "deleteModal"
+            ).classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        /* =========================================================
+           CLOSE DELETE MODAL
+        ========================================================== */
+
+        function closeDeleteModal() {
+
+            deleteTeacherId =
+                null;
+
+
+            document.getElementById(
+                "deleteModal"
+            ).classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        /* =========================================================
+           CONFIRM DELETE
+        ========================================================== */
+
+        async function confirmDeleteTeacher() {
+
+            if (!deleteTeacherId) {
                 return;
             }
 
-            if (id) {
-                const t = teachers.find(x => x.id === Number(id));
-                Object.assign(t, data);
-            } else {
-                teachers.push({ id: nextId++, ...data });
+
+            const button =
+                document.getElementById(
+                    "confirmDeleteButton"
+                );
+
+
+            try {
+
+                button.disabled =
+                    true;
+
+
+                button.textContent =
+                    "Deleting...";
+
+
+                const response =
+                    await fetch(
+                        `/api/teachers/${deleteTeacherId}`,
+                        {
+
+                            method: "DELETE"
+
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        result.message ||
+                        "Failed to delete teacher."
+                    );
+
+                }
+
+
+                closeDeleteModal();
+
+
+                await loadTeachers();
+
+
+                showSuccess(
+                    "Teacher deleted successfully."
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Delete teacher error:",
+                    error
+                );
+
+
+                showError(
+                    error.message ||
+                    "Failed to delete teacher."
+                );
+
+
+            } finally {
+
+                button.disabled =
+                    false;
+
+
+                button.textContent =
+                    "Delete Teacher";
+
             }
 
-            closeFormModal();
-            renderTeachers();
         }
 
-        // ---- View modal ----
-        function viewTeacher(id) {
-            const t = teachers.find(x => x.id === id);
-            if (!t) return;
 
-            document.getElementById('viewModalBody').innerHTML = `
-                <div><strong>Teacher Code</strong> ${escapeHtml(t.code)}</div>
-                <div><strong>Name</strong> ${escapeHtml(t.name)}</div>
-                <div><strong>Email</strong> ${escapeHtml(t.email)}</div>
-                <div><strong>Phone</strong> ${escapeHtml(t.phone)}</div>
-                <div><strong>Gender</strong> ${escapeHtml(t.gender)}</div>
-                <div><strong>Department</strong> ${escapeHtml(t.department)}</div>
-                <div><strong>Position</strong> ${escapeHtml(t.position)}</div>
-                <div><strong>Qualification</strong> ${escapeHtml(t.qualification)}</div>
-                <div><strong>Joined Date</strong> ${escapeHtml(t.joined)}</div>
-                <div><strong>Status</strong> ${t.status === 'active' ? 'Active' : 'Inactive'}</div>
-            `;
+        /* =========================================================
+           CLOSE MODALS WHEN CLICKING OUTSIDE
+        ========================================================== */
 
-            document.getElementById('viewModal').classList.remove('hidden');
-        }
+        document.addEventListener(
+            "click",
+            function (event) {
 
-        function closeViewModal() {
-            document.getElementById('viewModal').classList.add('hidden');
-        }
+                if (
+                    event.target.id ===
+                    "formModal"
+                ) {
 
-        // ---- Delete ----
-        function deleteTeacher(id) {
-            const t = teachers.find(x => x.id === id);
-            if (!t) return;
-            if (!confirm(`Delete ${t.name}? This cannot be undone.`)) return;
+                    closeFormModal();
 
-            teachers = teachers.filter(x => x.id !== id);
-            renderTeachers();
-        }
+                }
 
-        // ---- Init ----
-        document.addEventListener('DOMContentLoaded', () => {
-            changeView('grid');
-            renderTeachers();
-        });
+
+                if (
+                    event.target.id ===
+                    "viewModal"
+                ) {
+
+                    closeViewModal();
+
+                }
+
+
+                if (
+                    event.target.id ===
+                    "deleteModal"
+                ) {
+
+                    closeDeleteModal();
+
+                }
+
+            }
+        );
+
+
+        /* =========================================================
+           ESC KEY
+        ========================================================== */
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key ===
+                    "Escape"
+                ) {
+
+                    closeFormModal();
+
+                    closeViewModal();
+
+                    closeDeleteModal();
+
+                }
+
+            }
+        );
+
+
+        /* =========================================================
+           INITIALIZE
+        ========================================================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            async function () {
+
+                changeView("grid");
+
+
+                await Promise.all([
+                    loadDepartments(),
+                    loadTeachers()
+                ]);
+
+            }
+        );
+
     </script>
 
+
 </body>
+
+</html>

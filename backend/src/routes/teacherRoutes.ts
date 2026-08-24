@@ -10,19 +10,19 @@ import {
 
 const router = Router();
 
-// GET /api/teachers
+// GET all teachers
 router.get("/", getTeachers);
 
-// GET /api/teachers/:id
+// GET one teacher
 router.get("/:id", getTeacherById);
 
-// POST /api/teachers
+// CREATE teacher
 router.post("/", createTeacher);
 
-// PUT /api/teachers/:id
+// UPDATE teacher
 router.put("/:id", updateTeacher);
 
-// DELETE /api/teachers/:id
+// DELETE teacher
 router.delete("/:id", deleteTeacher);
 
 export default router;
